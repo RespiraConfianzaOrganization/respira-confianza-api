@@ -32,10 +32,16 @@ module.exports = {
       country: {
         type: Sequelize.STRING
       },
-      creation_date: {
+      created_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        defaultValue: Sequelize.fn('now'),
+        type: Sequelize.DATE,
       },
+      updated_at: {
+        allowNull: false,
+        defaultValue: Sequelize.fn('now'),
+        type: Sequelize.DATE,
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {

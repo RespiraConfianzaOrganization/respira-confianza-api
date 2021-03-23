@@ -1,4 +1,3 @@
-'use strict';
 const {
   Model
 } = require('sequelize');
@@ -22,10 +21,12 @@ module.exports = (sequelize, DataTypes) => {
     contaminant_4: DataTypes.FLOAT,
     contaminant_5: DataTypes.FLOAT,
     contaminant_6: DataTypes.FLOAT,
-    recorded_at: DataTypes.DATE
+    recorded_at: DataTypes.DATE,
+    updated_at: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'Station_Readings',
+    timestamps: false
   });
   return Station_Readings;
 };

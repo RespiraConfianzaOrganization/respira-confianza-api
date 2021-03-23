@@ -22,10 +22,12 @@ module.exports = (sequelize, DataTypes) => {
     latitude: DataTypes.STRING,
     longitude: DataTypes.STRING,
     status: DataTypes.STRING,
-    creation_date: DataTypes.DATE
+    created_at: DataTypes.DATE,
+    updated_at: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'Station',
+    timestamps: false
   });
   return Station;
 };

@@ -17,10 +17,13 @@ module.exports = (sequelize, DataTypes) => {
   };
   Sensor_Type.init({
     type: DataTypes.STRING,
-    unit: DataTypes.STRING
+    unit: DataTypes.STRING,
+    created_at: DataTypes.DATE,
+    updated_at: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'Sensor_Type',
+    timestamps: false
   });
   return Sensor_Type;
 };

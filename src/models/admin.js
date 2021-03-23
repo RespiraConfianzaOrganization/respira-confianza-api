@@ -21,10 +21,13 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     city: DataTypes.STRING,
     country: DataTypes.STRING,
-    creation_date: DataTypes.DATE
+    created_at: DataTypes.DATE,
+    updated_at: DataTypes.DATE,
+
   }, {
     sequelize,
     modelName: 'Admin',
+    timestamps: false
   });
   return Admin;
 };

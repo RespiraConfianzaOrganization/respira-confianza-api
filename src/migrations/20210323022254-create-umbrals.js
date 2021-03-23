@@ -27,6 +27,16 @@ module.exports = {
       dangerous: {
         type: Sequelize.FLOAT
       },
+      created_at: {
+        allowNull: false,
+        defaultValue: Sequelize.fn('now'),
+        type: Sequelize.DATE,
+      },
+      updated_at: {
+        allowNull: false,
+        defaultValue: Sequelize.fn('now'),
+        type: Sequelize.DATE,
+      }
     });
   },
   down: async (queryInterface, Sequelize) => {

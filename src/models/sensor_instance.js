@@ -20,10 +20,12 @@ module.exports = (sequelize, DataTypes) => {
     sensor_type_id: DataTypes.INTEGER,
     status: DataTypes.STRING,
     name_station_readings: DataTypes.STRING,
-    creation_date: DataTypes.DATE
+    created_at: DataTypes.DATE,
+    updated_at: DataTypes.DATE,
   }, {
     sequelize,
-    modelName: 'Sensor_instance',
+    modelName: 'Sensor_Instance',
+    timestamps: false
   });
   return Sensor_Instance;
 };

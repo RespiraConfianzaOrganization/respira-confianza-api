@@ -20,10 +20,13 @@ module.exports = (sequelize, DataTypes) => {
     moderate: DataTypes.FLOAT,
     unhealthy: DataTypes.FLOAT,
     very_unhealthy: DataTypes.FLOAT,
-    dangerous: DataTypes.FLOAT
+    dangerous: DataTypes.FLOAT,
+    created_at: DataTypes.DATE,
+    updated_at: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'Umbrals',
+    timestamps: false
   });
   return Umbrals;
 };
