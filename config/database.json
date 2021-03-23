@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "respiraconfianza",
+    "password": "respiraconfianza",
+    "database": "respiraconfianza",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "respiraconfianza",
+    "password": "respiraconfianza",
+    "database": "respiraconfianza",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "respiraconfianza",
+    "password": "respiraconfianza",
+    "database": "respiraconfianza",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
