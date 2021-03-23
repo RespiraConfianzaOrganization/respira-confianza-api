@@ -4,20 +4,23 @@
     "password": "respiraconfianza",
     "database": "respiraconfianza",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "logging": false
   },
   "test": {
     "username": "respiraconfianza",
     "password": "respiraconfianza",
     "database": "respiraconfianza",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "logging": false
   },
   "production": {
     "username": "respiraconfianza",
     "password": "respiraconfianza",
     "database": "respiraconfianza",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "postgres",
+    "logging": false
   }
 }
