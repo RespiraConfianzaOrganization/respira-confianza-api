@@ -7,12 +7,10 @@ const TOKENKEY = process.env.TOKENKEY
 const login = async (req, res) => {
     const { username, password } = req.body
     if (!username || username === "") {
-        res.statusCode = 400
-        return res.json({ message: "Debe ingresar un usuario" })
+        return res.status(400).json({ message: "Debe ingresar un usuario" })
     }
     if (!password || password === "") {
-        res.statusCode = 400
-        return res.json({ message: "Debe ingresar una contraseña" })
+        return res.status(400).json({ message: "Debe ingresar una contraseña" })
     }
 
     const admin = await models.Admin.findOne({
@@ -20,8 +18,7 @@ const login = async (req, res) => {
     })
 
     if (!admin) {
-        res.statusCode = 404
-        return res.json({
+        return res.status(404).json({
             message: "Usuario no existe"
         })
     }
@@ -31,19 +28,16 @@ const login = async (req, res) => {
         password, admin.password
     )
     if (!comparePassword) {
-        res.statusCode = 404
-        return res.json({
+        return res.status(404).json({
             message: "Usuario y/o contraseña no coinciden"
         })
     }
     try {
         const token = await jwt.sign({ data: username }, TOKENKEY, { expiresIn: '1h' })
-        res.statusCode = 200
-        return res.json({ token, user: admin })
+        return res.status(200).json({ token, user: admin })
     } catch (err) {
         logger.error(err)
-        res.statusCode = 400
-        return res.json({ message: 'Hubo un error. Vuelve a intentarlo más tarde' })
+        return res.status(500).json({ message: 'Hubo un error. Vuelve a intentarlo más tarde' })
     }
 }
 

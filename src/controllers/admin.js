@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt")
 const saltRounds = 10;
 const models = require('../models');
+const { Op } = require("sequelize");
 
 const getAdmins = async (req, res) => {
     const admins = await models.Admin.findAll({
@@ -9,16 +10,14 @@ const getAdmins = async (req, res) => {
         }
     }
     );
-    res.statusCode = 200
-    return res.json({ admins })
+    return res.status(200).json({ admins })
 };
 
 const getAdmin = async (req, res) => {
     const id = req.params.id
 
     if (!id) {
-        res.statusCode = 400
-        return res.json({ message: "Debe ingresar un id" })
+        return res.status(400).json({ message: "Debe ingresar un id" })
     }
     const admin = await models.Admin.findOne({
         where: { id },
@@ -27,26 +26,37 @@ const getAdmin = async (req, res) => {
         }
     })
     if (!admin) {
-        res.statusCode = 404
-        return res.json({ message: "Administrador no encontrado" })
+        return res.status(404).json({ message: "Administrador no encontrado" })
     }
-    res.statusCode = 200
-    return res.json({ admin })
+    return res.status(200).json({ admin })
 }
 
 const newAdmin = async (req, res) => {
     const { first_name, last_name, username, password, email, city, country } = req.body
 
     if (!username || !password || !email || !first_name || !last_name) {
-        res.statusCode = 400
-        return res.json({ message: "Debe llenar los campos obligatorios usuario, contraseña, email, nombre y apellido" })
+        return res.status(400).json({ message: "Debe llenar los campos obligatorios usuario, contraseña, email, nombre y apellido" })
     }
     let admin = await models.Admin.findOne({
-        where: { username }
+        where: {
+            [Op.or]: [
+                {
+                    username: { [Op.eq]: username }
+                },
+                {
+                    email: { [Op.eq]: email }
+                }
+            ]
+        }
     })
     if (admin) {
-        res.statusCode = 400
-        return res.json({ message: "Ya existe un usuario con el mismo nombre de usuario" })
+        if (admin.username == username) {
+            return res.status(400).json({ message: "Ya existe un usuario con el mismo nombre de usuario" })
+        }
+        else {
+            return res.status(400).json({ message: "Ya existe un usuario con el mismo correo" })
+        }
+
     }
     let hashPassword;
     await bcrypt.genSalt(saltRounds)
@@ -63,8 +73,7 @@ const newAdmin = async (req, res) => {
         city,
         country
     })
-    res.statusCode = 201
-    return res.json({ admin })
+    return res.status(201).json({ admin })
 }
 
 const editAdmin = async (req, res) => {
@@ -72,16 +81,14 @@ const editAdmin = async (req, res) => {
     const { first_name, last_name, username, password, email, city, country } = req.body
 
     if (!id) {
-        res.statusCode = 400
-        return res.json({ message: "Debe ingresar un id" })
+        return res.status(400).json({ message: "Debe ingresar un id" })
     }
     let admin = await models.Admin.findOne({
         where: { id }
     })
 
     if (!admin) {
-        res.statusCode = 404
-        return res.json({ message: "Administrador no encontrado" })
+        return res.status(404).json({ message: "Administrador no encontrado" })
     }
 
     admin.first_name = first_name ? first_name : admin.first_name
@@ -92,27 +99,23 @@ const editAdmin = async (req, res) => {
     admin.country = country ? country : admin.country
 
     await admin.save();
-    res.statusCode = 200
-    return res.json({ admin })
+    return res.status(200).json({ admin })
 }
 
 const deleteAdmin = async (req, res) => {
     const id = req.params.id
 
     if (!id) {
-        res.statusCode = 400
-        return res.json({ message: "Debe ingresar un id" })
+        return res.status(400).json({ message: "Debe ingresar un id" })
     }
     const admin = await models.Admin.findOne({
         where: { id }
     })
     if (!admin) {
-        res.statusCode = 404
-        return res.json({ message: "Administrador no encontrado" })
+        return res.status(404).json({ message: "Administrador no encontrado" })
     }
     await admin.destroy();
-    res.statusCode = 200
-    return res.json({ message: "Administrador eliminado correctamente" })
+    return res.status(200).json({ message: "Administrador eliminado correctamente" })
 }
 
 module.exports = {
