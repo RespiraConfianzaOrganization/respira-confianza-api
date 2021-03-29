@@ -23,12 +23,15 @@ module.exports = {
         type: Sequelize.STRING
       },
       latitude: {
-        type: Sequelize.STRING
+        allowNull: false,
+        type: Sequelize.FLOAT
       },
       longitude: {
-        type: Sequelize.STRING
+        allowNull: false,
+        type: Sequelize.FLOAT
       },
       status: {
+        allowNull: false,
         type: Sequelize.STRING
       },
       created_at: {
