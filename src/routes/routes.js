@@ -4,6 +4,7 @@ const router = express.Router();
 
 const authController = require("../controllers/auth")
 const adminController = require("../controllers/admin")
+const sensorTypeController = require("../controllers/sensor_type")
 const stationController = require("../controllers/station")
 
 router.get('/auth/isAuthenticated', authController.isAuthenticated)
@@ -24,5 +25,12 @@ router.get('/stations/:id', authController.isAuthenticated, stationController.ge
 router.post('/stations/new', authController.isAuthenticated, stationController.newStation)
 router.put('/stations/:id', authController.isAuthenticated, stationController.editStation)
 router.delete('/stations/:id', authController.isAuthenticated, stationController.deleteStation)
+
+// SensorTypes
+router.get('/sensor-types', authController.isAuthenticated, sensorTypeController.getSensorTypes)
+router.get('/sensor-types/:id', authController.isAuthenticated, sensorTypeController.getSensorType)
+router.post('/sensor-types/new', authController.isAuthenticated, sensorTypeController.newSensorType)
+router.put('/sensor-types/:id', authController.isAuthenticated, sensorTypeController.editSensorType)
+router.delete('/sensor-types/:id', authController.isAuthenticated, sensorTypeController.deleteSensorType)
 
 module.exports = router;
