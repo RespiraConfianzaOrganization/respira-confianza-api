@@ -6,6 +6,7 @@ const authController = require("../controllers/auth")
 const adminController = require("../controllers/admin")
 const sensorTypeController = require("../controllers/sensor_type")
 const stationController = require("../controllers/station")
+const umbralsController = require("../controllers/umbrals")
 
 router.get('/auth/isAuthenticated', authController.isAuthenticated)
 router.get('/auth/isAuthenticatedAdmin', authController.isAuthenticatedAdmin)
@@ -32,5 +33,14 @@ router.get('/sensor-types/:id', authController.isAuthenticated, sensorTypeContro
 router.post('/sensor-types/new', authController.isAuthenticated, sensorTypeController.newSensorType)
 router.put('/sensor-types/:id', authController.isAuthenticated, sensorTypeController.editSensorType)
 router.delete('/sensor-types/:id', authController.isAuthenticated, sensorTypeController.deleteSensorType)
+
+
+// Umbrals
+router.get('/sensor-umbrals', authController.isAuthenticated, umbralsController.getAllUmbrals)
+router.get('/sensor-umbrals/:id', authController.isAuthenticated, umbralsController.getSensorUmbrals)
+router.post('/sensor-umbrals/new', authController.isAuthenticated, umbralsController.newSensorUmbrals)
+router.put('/sensor-umbrals/:id', authController.isAuthenticated, umbralsController.editSensorUmbrals)
+router.delete('/sensor-umbrals/:id', authController.isAuthenticated, umbralsController.deleteSensorUmbrals)
+
 
 module.exports = router;
