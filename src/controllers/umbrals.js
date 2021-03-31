@@ -72,7 +72,7 @@ const editSensorUmbrals = async (req, res) => {
     sensorUmbrals.good = good ? good : sensorUmbrals.good
     sensorUmbrals.moderate = moderate ? moderate : sensorUmbrals.moderate
     sensorUmbrals.unhealthy = unhealthy ? unhealthy : sensorUmbrals.unhealthy
-    sensorUmbrals.very_unhealthy = very_unhealthy ? unit : sensorUmbrals.very_unhealthy
+    sensorUmbrals.very_unhealthy = very_unhealthy ? very_unhealthy : sensorUmbrals.very_unhealthy
     sensorUmbrals.dangerous = dangerous ? dangerous : sensorUmbrals.dangerous
 
     await sensorUmbrals.save();

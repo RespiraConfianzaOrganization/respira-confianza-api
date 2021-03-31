@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Station.hasMany(models.Sensor_Instance, { foreignKey: 'station_id' })
+      Station.hasMany(models.Sensor_Instance, { foreignKey: 'station_id', onDelete: 'cascade', hooks: true })
     }
   };
   Station.init({
