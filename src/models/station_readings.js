@@ -1,3 +1,4 @@
+//TODO: ADD INDEX TO SEARCH
 const {
   Model
 } = require('sequelize');

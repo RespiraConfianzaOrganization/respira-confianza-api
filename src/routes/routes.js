@@ -7,6 +7,7 @@ const adminController = require("../controllers/admin")
 const pollutantController = require("../controllers/pollutant")
 const stationController = require("../controllers/station")
 const umbralsController = require("../controllers/umbrals")
+const stationReadingsController = require("../controllers/station_readings")
 
 router.get('/auth/isAuthenticated', authController.isAuthenticated)
 router.get('/auth/isAuthenticatedAdmin', authController.isAuthenticatedAdmin)
@@ -37,5 +38,8 @@ router.post('/pollutant-umbrals/new', authController.isAuthenticated, umbralsCon
 router.put('/pollutant-umbrals/:id', authController.isAuthenticated, umbralsController.editPollutantUmbrals)
 router.delete('/pollutant-umbrals/:id', authController.isAuthenticated, umbralsController.deletePollutantUmbrals)
 
+
+// Readings
+router.get('/station-readings', authController.isAuthenticated, stationReadingsController.getStationReadings)
 
 module.exports = router;

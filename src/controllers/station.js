@@ -4,6 +4,7 @@ const models = require('../models');
 const { Op } = require("sequelize");
 
 const getStations = async (req, res) => {
+    //TODO: PAGINATION
     const stations = await models.Station.findAll({});
     return res.status(200).json({ stations })
 };
