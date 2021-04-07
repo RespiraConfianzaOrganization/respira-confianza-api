@@ -15,12 +15,16 @@ module.exports = (sequelize, DataTypes) => {
   };
   Station_Readings.init({
     station_id: DataTypes.INTEGER,
-    contaminant_1: DataTypes.FLOAT,
-    contaminant_2: DataTypes.FLOAT,
-    contaminant_3: DataTypes.FLOAT,
-    contaminant_4: DataTypes.FLOAT,
-    contaminant_5: DataTypes.FLOAT,
-    contaminant_6: DataTypes.FLOAT,
+    MP10: DataTypes.FLOAT,
+    MP25: DataTypes.FLOAT,
+    MP1: DataTypes.FLOAT,
+    SO2: DataTypes.FLOAT,
+    O3: DataTypes.FLOAT,
+    NO2: DataTypes.FLOAT,
+    NO: DataTypes.FLOAT,
+    C02: DataTypes.FLOAT,
+    CO: DataTypes.FLOAT,
+    COV: DataTypes.FLOAT,
     recorded_at: DataTypes.DATE,
     updated_at: DataTypes.DATE,
   }, {

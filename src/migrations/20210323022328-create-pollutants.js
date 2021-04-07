@@ -1,26 +1,18 @@
 'use strict';
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('Sensor_Instances', {
+    await queryInterface.createTable('Pollutants', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      station_id: {
+      name: {
         allowNull: false,
-        type: Sequelize.INTEGER
-      },
-      sensor_type_id: {
-        allowNull: false,
-        type: Sequelize.INTEGER
-      },
-      status: {
         type: Sequelize.STRING
       },
-      name_station_readings: {
-        allowNull: false,
+      unit: {
         type: Sequelize.STRING
       },
       created_at: {
@@ -36,6 +28,6 @@ module.exports = {
     });
   },
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.dropTable('Sensor_Instances');
+    await queryInterface.dropTable('Pollutants');
   }
 };

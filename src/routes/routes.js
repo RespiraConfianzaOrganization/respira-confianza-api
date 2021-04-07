@@ -4,7 +4,7 @@ const router = express.Router();
 
 const authController = require("../controllers/auth")
 const adminController = require("../controllers/admin")
-const sensorTypeController = require("../controllers/sensor_type")
+const pollutantController = require("../controllers/pollutant")
 const stationController = require("../controllers/station")
 const umbralsController = require("../controllers/umbrals")
 
@@ -27,20 +27,15 @@ router.post('/stations/new', authController.isAuthenticated, stationController.n
 router.put('/stations/:id', authController.isAuthenticated, stationController.editStation)
 router.delete('/stations/:id', authController.isAuthenticated, stationController.deleteStation)
 
-// SensorTypes
-router.get('/sensor-types', authController.isAuthenticated, sensorTypeController.getSensorTypes)
-router.get('/sensor-types/:id', authController.isAuthenticated, sensorTypeController.getSensorType)
-router.post('/sensor-types/new', authController.isAuthenticated, sensorTypeController.newSensorType)
-router.put('/sensor-types/:id', authController.isAuthenticated, sensorTypeController.editSensorType)
-router.delete('/sensor-types/:id', authController.isAuthenticated, sensorTypeController.deleteSensorType)
-
+// Pollutants
+router.get('/pollutants', authController.isAuthenticated, pollutantController.getPollutants)
 
 // Umbrals
-router.get('/sensor-umbrals', authController.isAuthenticated, umbralsController.getAllUmbrals)
-router.get('/sensor-umbrals/:id', authController.isAuthenticated, umbralsController.getSensorUmbrals)
-router.post('/sensor-umbrals/new', authController.isAuthenticated, umbralsController.newSensorUmbrals)
-router.put('/sensor-umbrals/:id', authController.isAuthenticated, umbralsController.editSensorUmbrals)
-router.delete('/sensor-umbrals/:id', authController.isAuthenticated, umbralsController.deleteSensorUmbrals)
+router.get('/pollutant-umbrals', authController.isAuthenticated, umbralsController.getAllUmbrals)
+router.get('/pollutant-umbrals/:id', authController.isAuthenticated, umbralsController.getPollutantUmbrals)
+router.post('/pollutant-umbrals/new', authController.isAuthenticated, umbralsController.newPollutantUmbrals)
+router.put('/pollutant-umbrals/:id', authController.isAuthenticated, umbralsController.editPollutantUmbrals)
+router.delete('/pollutant-umbrals/:id', authController.isAuthenticated, umbralsController.deletePollutantUmbrals)
 
 
 module.exports = router;

@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Sensor_Instance extends Model {
+  class Pollutant_Station extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,21 +11,19 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Sensor_Instance.belongsTo(models.Sensor_Type, { foreignKey: 'sensor_type_id' })
-      Sensor_Instance.belongsTo(models.Station, { foreignKey: 'station_id' })
+      Pollutant_Station.belongsTo(models.Pollutant, { foreignKey: 'pollutant_id' })
+      Pollutant_Station.belongsTo(models.Station, { foreignKey: 'station_id' })
     }
   };
-  Sensor_Instance.init({
+  Pollutant_Station.init({
     station_id: DataTypes.INTEGER,
-    sensor_type_id: DataTypes.INTEGER,
-    status: DataTypes.STRING,
-    name_station_readings: DataTypes.STRING,
+    pollutant_id: DataTypes.INTEGER,
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE,
   }, {
     sequelize,
-    modelName: 'Sensor_Instance',
+    modelName: 'Pollutant_Station',
     timestamps: false
   });
-  return Sensor_Instance;
+  return Pollutant_Station;
 };

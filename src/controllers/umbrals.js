@@ -2,106 +2,106 @@ const models = require('../models');
 const { Op } = require("sequelize");
 
 const getAllUmbrals = async (req, res) => {
-    const sensorUmbrals = await models.Umbrals.findAll({
+    const pollutantUmbrals = await models.Umbrals.findAll({
         include: {
-            model: models.Sensor_Type
+            model: models.Pollutant
         }
     });
-    return res.status(200).json({ sensorUmbrals })
+    return res.status(200).json({ pollutantUmbrals })
 };
 
-const getSensorUmbrals = async (req, res) => {
+const getPollutantUmbrals = async (req, res) => {
     const id = req.params.id
 
     if (!id) {
         return res.status(400).json({ message: "Debe ingresar un id" })
     }
-    const sensorUmbrals = await models.Umbrals.findOne({
+    const pollutantUmbrals = await models.Umbrals.findOne({
         where: { id },
         include: {
-            model: models.Sensor_Type
+            model: models.Pollutant
         }
     })
-    if (!sensorUmbrals) {
-        return res.status(404).json({ message: "Umbrales de sensor no encontrados" })
+    if (!pollutantUmbrals) {
+        return res.status(404).json({ message: "Umbrales de contaminante no encontrados" })
     }
-    return res.status(200).json({ sensorUmbrals })
+    return res.status(200).json({ pollutantUmbrals })
 }
 
-const newSensorUmbrals = async (req, res) => {
-    const { sensor_type_id, good, moderate, unhealthy, very_unhealthy, dangerous } = req.body
+const newPollutantUmbrals = async (req, res) => {
+    const { pollutant_id, good, moderate, unhealthy, very_unhealthy, dangerous } = req.body
 
-    if (!sensor_type_id) {
-        return res.status(400).json({ message: "Debe elegir un sensor" })
+    if (!pollutant_id) {
+        return res.status(400).json({ message: "Debe elegir un contaminante" })
     }
     if (!good || !moderate || !unhealthy || !very_unhealthy || !dangerous) {
         return res.status(400).json({ message: "Debe llenar los campos que indican los rangos de umbrales" })
     }
-    let sensorUmbrals = await models.Umbrals.findOne({
+    let pollutantUmbrals = await models.Umbrals.findOne({
         where: {
-            sensor_type_id
+            pollutant_id
         },
         include: {
-            model: models.Sensor_Type
+            model: models.Pollutant
         }
     })
-    if (sensorUmbrals) {
-        return res.status(400).json({ message: `Ya existe una definición de umbrales para el sensor ${sensorUmbrals.Sensor_Type.type}` })
+    if (pollutantUmbrals) {
+        return res.status(400).json({ message: `Ya existe una definición de umbrales para el contaminante ${pollutantUmbrals.Pollutant.name}` })
     }
-    sensorUmbrals = await models.Umbrals.create({
-        sensor_type_id, good, moderate, unhealthy, very_unhealthy, dangerous
+    pollutantUmbrals = await models.Umbrals.create({
+        pollutant_id, good, moderate, unhealthy, very_unhealthy, dangerous
     })
-    return res.status(201).json({ sensorUmbrals })
+    return res.status(201).json({ pollutantUmbrals })
 }
 
-const editSensorUmbrals = async (req, res) => {
+const editPollutantUmbrals = async (req, res) => {
     const id = req.params.id
     const { good, moderate, unhealthy, very_unhealthy, dangerous } = req.body
 
     if (!id) {
         return res.status(400).json({ message: "Debe ingresar un id" })
     }
-    let sensorUmbrals = await models.Umbrals.findOne({
+    let pollutantUmbrals = await models.Umbrals.findOne({
         where: { id }
     })
 
-    if (!sensorUmbrals) {
-        return res.status(404).json({ message: "Umbrales de sensor no encontrados" })
+    if (!pollutantUmbrals) {
+        return res.status(404).json({ message: "Umbrales de contaminante no encontrados" })
     }
 
-    sensorUmbrals.good = good ? good : sensorUmbrals.good
-    sensorUmbrals.moderate = moderate ? moderate : sensorUmbrals.moderate
-    sensorUmbrals.unhealthy = unhealthy ? unhealthy : sensorUmbrals.unhealthy
-    sensorUmbrals.very_unhealthy = very_unhealthy ? very_unhealthy : sensorUmbrals.very_unhealthy
-    sensorUmbrals.dangerous = dangerous ? dangerous : sensorUmbrals.dangerous
+    pollutantUmbrals.good = good ? good : pollutantUmbrals.good
+    pollutantUmbrals.moderate = moderate ? moderate : pollutantUmbrals.moderate
+    pollutantUmbrals.unhealthy = unhealthy ? unhealthy : pollutantUmbrals.unhealthy
+    pollutantUmbrals.very_unhealthy = very_unhealthy ? very_unhealthy : pollutantUmbrals.very_unhealthy
+    pollutantUmbrals.dangerous = dangerous ? dangerous : pollutantUmbrals.dangerous
 
-    await sensorUmbrals.save();
-    return res.status(200).json({ sensorUmbrals })
+    await pollutantUmbrals.save();
+    return res.status(200).json({ pollutantUmbrals })
 }
 
-const deleteSensorUmbrals = async (req, res) => {
+const deletePollutantUmbrals = async (req, res) => {
     const id = req.params.id
 
     if (!id) {
         return res.status(400).json({ message: "Debe ingresar un id" })
     }
-    const sensorUmbrals = await models.Umbrals.findOne({
+    const pollutantUmbrals = await models.Umbrals.findOne({
         where: { id },
         include: {
-            model: models.Sensor_Type
+            model: models.Pollutant
         }
     })
-    if (!sensorUmbrals) {
-        return res.status(404).json({ message: "Umbrales de sensor no encontrado" })
+    if (!pollutantUmbrals) {
+        return res.status(404).json({ message: "Umbrales de contaminante no encontrado" })
     }
-    await sensorUmbrals.destroy();
-    return res.status(200).json({ message: `Umbrales de sensor ${sensorUmbrals.Sensor_Type.type} eliminados correctamente` })
+    await pollutantUmbrals.destroy();
+    return res.status(200).json({ message: `Umbrales de contaminante ${pollutantUmbrals.Pollutant.name} eliminados correctamente` })
 }
 
 module.exports = {
     getAllUmbrals,
-    getSensorUmbrals,
-    newSensorUmbrals,
-    editSensorUmbrals,
-    deleteSensorUmbrals
+    getPollutantUmbrals,
+    newPollutantUmbrals,
+    editPollutantUmbrals,
+    deletePollutantUmbrals
 };

@@ -12,22 +12,34 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      contaminant_1: {
+      MP10:{
         type: Sequelize.FLOAT
       },
-      contaminant_2: {
+      MP25: {
         type: Sequelize.FLOAT
       },
-      contaminant_3: {
+      MP1: {
         type: Sequelize.FLOAT
       },
-      contaminant_4: {
+      SO2:{
+          type: Sequelize.FLOAT
+      },
+      O3:{
         type: Sequelize.FLOAT
       },
-      contaminant_5: {
+      NO2:{
         type: Sequelize.FLOAT
       },
-      contaminant_6: {
+      NO:{
+        type: Sequelize.FLOAT
+      },
+      C02:{
+        type: Sequelize.FLOAT
+      },
+      CO:{
+        type: Sequelize.FLOAT
+      },
+      COV: {
         type: Sequelize.FLOAT
       },
       recorded_at: {

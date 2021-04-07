@@ -3,36 +3,33 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Station extends Model {
+  class Pollutant extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-      Station.belongsToMany(models.Pollutant, {
+      // define association here}      
+      Pollutant.belongsToMany(models.Station, {
         through: "Pollutant_Station",
-        foreignKey: "station_id",
-        otherKey: "pollutant_id",
+        foreignKey: "pollutant_id",
+        otherKey: "station_id",
       });
-      Station.hasMany(models.Pollutant_Station, { foreignKey: "station_id" });
+      Pollutant.hasOne(models.Umbrals, { foreignKey: 'pollutant_id', onDelete: 'cascade', hooks: true })
+      Pollutant.hasMany(models.Pollutant_Station, { foreignKey: "pollutant_id" });
+
     }
   };
-  Station.init({
-    private_key: DataTypes.STRING,
+  Pollutant.init({
     name: DataTypes.STRING,
-    country: DataTypes.STRING,
-    city: DataTypes.STRING,
-    latitude: DataTypes.FLOAT,
-    longitude: DataTypes.FLOAT,
-    status: DataTypes.STRING,
+    unit: DataTypes.STRING,
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE,
   }, {
     sequelize,
-    modelName: 'Station',
+    modelName: 'Pollutant',
     timestamps: false
   });
-  return Station;
+  return Pollutant;
 };

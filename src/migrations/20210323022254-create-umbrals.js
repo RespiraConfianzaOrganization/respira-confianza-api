@@ -8,7 +8,7 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      sensor_type_id: {
+      pollutant_id: {
         allowNull: false,
         type: Sequelize.INTEGER
       },
