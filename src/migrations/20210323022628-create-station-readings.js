@@ -12,7 +12,16 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER
       },
-      MP10:{
+      Temperatura: {
+        type: Sequelize.FLOAT
+      },
+      Presion: {
+        type: Sequelize.FLOAT
+      },
+      Humedad: {
+        type: Sequelize.FLOAT
+      },
+      MP10: {
         type: Sequelize.FLOAT
       },
       MP25: {
@@ -21,25 +30,34 @@ module.exports = {
       MP1: {
         type: Sequelize.FLOAT
       },
-      SO2:{
-          type: Sequelize.FLOAT
-      },
-      O3:{
+      SO2: {
         type: Sequelize.FLOAT
       },
-      NO2:{
+      O3: {
         type: Sequelize.FLOAT
       },
-      NO:{
+      NO2: {
         type: Sequelize.FLOAT
       },
-      C02:{
+      NO: {
         type: Sequelize.FLOAT
       },
-      CO:{
+      CO2: {
+        type: Sequelize.FLOAT
+      },
+      CO: {
         type: Sequelize.FLOAT
       },
       COV: {
+        type: Sequelize.FLOAT
+      },
+      extra1: {
+        type: Sequelize.FLOAT
+      },
+      extra2: {
+        type: Sequelize.FLOAT
+      },
+      extra3: {
         type: Sequelize.FLOAT
       },
       recorded_at: {

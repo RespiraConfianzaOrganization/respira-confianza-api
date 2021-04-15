@@ -108,6 +108,11 @@ router.get(
   stationReadingsController.getStationReadings
 );
 
+router.post(
+  "/station-readings",
+  stationReadingsController.receiveReading
+);
+
 // Pollutant Station
 
 router.post(
