@@ -10,10 +10,22 @@ module.exports = {
       },
       station_id: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Stations',
+          },
+          key: 'id'
+        },
       },
       pollutant_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Pollutants',
+          },
+          key: 'id'
+        },
       },
       created_at: {
         allowNull: false,

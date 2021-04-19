@@ -10,7 +10,13 @@ module.exports = {
       },
       station_id: {
         allowNull: false,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Stations',
+          },
+          key: 'id'
+        },
       },
       Temperatura: {
         type: Sequelize.FLOAT
