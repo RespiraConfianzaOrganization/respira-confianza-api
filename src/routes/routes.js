@@ -47,6 +47,10 @@ router.get(
   stationController.getStations
 );
 router.get(
+  "/stations/search",
+  stationController.searchStations,
+);
+router.get(
   "/stations/:id",
   authController.isAuthenticated,
   stationController.getStation
