@@ -33,9 +33,9 @@ const getStation = async (req, res) => {
 };
 
 const newStation = async (req, res) => {
-  const { name, country, city, latitude, longitude, status } = req.body;
+  const { name, city_id, latitude, longitude, status } = req.body;
 
-  if (!name || !latitude || !longitude || !status) {
+  if (!name || !latitude || !longitude || !status || !city_id) {
     return res.status(400).json({
       message:
         "Debe llenar los campos obligatorios nombre, status, latitud y longitud",
@@ -78,8 +78,7 @@ const newStation = async (req, res) => {
   station = await models.Station.create({
     private_key: privateKey,
     name,
-    country,
-    city,
+    city_id,
     latitude,
     longitude,
     status,
@@ -89,7 +88,7 @@ const newStation = async (req, res) => {
 
 const editStation = async (req, res) => {
   const id = req.params.id;
-  const { name, country, city, latitude, longitude, status } = req.body;
+  const { name, city_id, latitude, longitude, status } = req.body;
 
   if (!id) {
     return res.status(400).json({ message: "Debe ingresar un id" });
@@ -134,8 +133,7 @@ const editStation = async (req, res) => {
   }
 
   station.name = name ? name : station.name;
-  station.country = country ? country : station.country;
-  station.city = city ? city : station.city;
+  station.city_id = city_id ? city_id : station.city_id;
   station.latitude = latitude ? latitude : station.latitude;
   station.longitude = longitude ? longitude : station.longitude;
   station.status = status ? status : station.status;

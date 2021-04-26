@@ -17,13 +17,14 @@ module.exports = (sequelize, DataTypes) => {
         otherKey: "pollutant_id",
       });
       Station.hasMany(models.Pollutant_Station, { foreignKey: "station_id" });
+      Station.hasMany(models.Pollutant_Station, { foreignKey: "station_id" });
+      //Station.hasOne(models.City, { foreignKey: "city_id" });
     }
   };
   Station.init({
     private_key: DataTypes.STRING,
     name: DataTypes.STRING,
-    country: DataTypes.STRING,
-    city: DataTypes.STRING,
+    city_id: DataTypes.INTEGER,
     latitude: DataTypes.FLOAT,
     longitude: DataTypes.FLOAT,
     status: DataTypes.STRING,

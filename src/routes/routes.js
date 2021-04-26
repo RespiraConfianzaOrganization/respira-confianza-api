@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const authController = require("../controllers/auth");
+const countryController = require("../controllers/country")
+const cityController = require("../controllers/city")
 const adminController = require("../controllers/admin");
 const pollutantController = require("../controllers/pollutant");
 const pollutantStationController = require("../controllers/pollutant_station");
@@ -130,5 +132,13 @@ router.delete(
   authController.isAuthenticated,
   pollutantStationController.deletePoluttantStation
 );
+
+// Cities
+router.get("/cities", cityController.getCities)
+router.get("/cities/country/:country_id", cityController.getCityByCountry)
+
+// Countries
+
+router.get("/countries", countryController.getCoutries)
 
 module.exports = router;

@@ -26,7 +26,7 @@ var corsOptions = {
   optionsSuccessStatus: 200,
   methods: "GET, PUT, POST, DELETE"
 }
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Routes
 const routes = require("./src/routes/routes");
@@ -35,7 +35,5 @@ app.use("/api", routes);
 
 app.listen(port, () => {
   logger.info(`Server running at ${host}:${port}`);
-  //logger.warn('And fits on your back?');
-  //logger.error('Its log, log, log');
 }
 );
