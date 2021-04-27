@@ -5,7 +5,6 @@ const getCities = async (req, res) => {
   const { search } = req.query
   let cities;
   if (search) {
-    console.log(search)
     cities = await models.City.findAll({
       where: {
         name: {
@@ -17,11 +16,10 @@ const getCities = async (req, res) => {
   else {
     cities = await models.City.findAll({});
   }
-  console.log(cities)
   return res.status(200).json({ cities })
 };
 
-const getCityByCountry = async (req, res) => {
+const getCitiesByCountry = async (req, res) => {
   const { country_id } = req.params
   const cities = await models.City.findAll({
     where: { country_id }
@@ -31,5 +29,5 @@ const getCityByCountry = async (req, res) => {
 
 module.exports = {
   getCities,
-  getCityByCountry
+  getCitiesByCountry
 }

@@ -26,11 +26,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      city: {
-        type: Sequelize.STRING
-      },
-      country: {
-        type: Sequelize.STRING
+      city_id: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: 'Cities',
+          },
+          key: 'id'
+        },
       },
       created_at: {
         allowNull: false,

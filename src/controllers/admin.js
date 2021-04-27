@@ -7,7 +7,13 @@ const getAdmins = async (req, res) => {
     const admins = await models.Admin.findAll({
         attributes: {
             exclude: ['password']
-        }
+        },
+        include: {
+            model: models.City,
+            include: {
+                model: models.Country
+            }
+        },
     }
     );
     return res.status(200).json({ admins })
@@ -32,31 +38,18 @@ const getAdmin = async (req, res) => {
 }
 
 const newAdmin = async (req, res) => {
-    const { first_name, last_name, username, password, email, city, country } = req.body
+    const { first_name, last_name, password, email, city_id, country } = req.body
 
-    if (!username || !password || !email || !first_name || !last_name) {
+    if (!password || !email || !first_name || !last_name) {
         return res.status(400).json({ message: "Debe llenar los campos obligatorios usuario, contraseña, email, nombre y apellido" })
     }
     let admin = await models.Admin.findOne({
         where: {
-            [Op.or]: [
-                {
-                    username: { [Op.eq]: username }
-                },
-                {
-                    email: { [Op.eq]: email }
-                }
-            ]
+            email: { [Op.eq]: email }
         }
     })
     if (admin) {
-        if (admin.username == username) {
-            return res.status(400).json({ message: "Ya existe un usuario con el mismo nombre de usuario" })
-        }
-        else {
-            return res.status(400).json({ message: "Ya existe un usuario con el mismo correo" })
-        }
-
+        return res.status(400).json({ message: "Ya existe un usuario con el mismo correo" })
     }
     let hashPassword;
     await bcrypt.genSalt(saltRounds)
@@ -64,13 +57,14 @@ const newAdmin = async (req, res) => {
         hashPassword = hash
     )
 
+    const username = email
     admin = await models.Admin.create({
         first_name,
         last_name,
         username,
         password: hashPassword,
         email,
-        city,
+        city_id,
         country
     })
     return res.status(201).json({ admin })
@@ -78,7 +72,7 @@ const newAdmin = async (req, res) => {
 
 const editAdmin = async (req, res) => {
     const id = req.params.id
-    const { first_name, last_name, username, password, email, city, country } = req.body
+    const { first_name, last_name, password, email, city_id, country } = req.body
 
     if (!id) {
         return res.status(400).json({ message: "Debe ingresar un id" })
@@ -95,7 +89,8 @@ const editAdmin = async (req, res) => {
     admin.last_name = last_name ? last_name : admin.last_name
     admin.password = password ? password : admin.password
     admin.email = email ? email : admin.email
-    admin.city = city ? city : admin.city
+    admin.username = email ? email : admin.email
+    admin.city_id = city_id ? city_id : admin.city_id
     admin.country = country ? country : admin.country
 
     await admin.save();

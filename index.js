@@ -6,8 +6,6 @@ const path = require("path");
 const morgan = require('morgan');
 const logger = require('./logger')
 
-// dotenv
-require("dotenv").config();
 const port = process.env.PORT;
 const host = process.env.HOST;
 

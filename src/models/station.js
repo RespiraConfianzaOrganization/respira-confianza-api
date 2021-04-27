@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       });
       Station.hasMany(models.Pollutant_Station, { foreignKey: "station_id" });
       Station.hasMany(models.Pollutant_Station, { foreignKey: "station_id" });
-      //Station.hasOne(models.City, { foreignKey: "city_id" });
+      Station.belongsTo(models.City, { foreignKey: "city_id" });
     }
   };
   Station.init({

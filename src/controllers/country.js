@@ -6,5 +6,5 @@ const getCoutries = async (req, res) => {
 };
 
 module.exports = {
-  getCoutries
+  getCoutries,
 }

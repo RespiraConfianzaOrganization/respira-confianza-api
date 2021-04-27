@@ -5,7 +5,14 @@ const { Op } = require("sequelize");
 
 const getStations = async (req, res) => {
   //TODO: PAGINATION
-  const stations = await models.Station.findAll({});
+  const stations = await models.Station.findAll({
+    include: {
+      model: models.City,
+      include: {
+        model: models.Country
+      }
+    },
+  });
   return res.status(200).json({ stations });
 };
 
@@ -22,9 +29,15 @@ const getStation = async (req, res) => {
   }
   const station = await models.Station.findOne({
     where: { id },
-    include: {
+    include: [{
       model: models.Pollutant,
     },
+    {
+      model: models.City,
+      include: {
+        model: models.Country
+      }
+    }]
   });
   if (!station) {
     return res.status(404).json({ message: "Estación no encontrada" });

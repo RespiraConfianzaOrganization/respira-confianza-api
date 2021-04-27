@@ -135,10 +135,8 @@ router.delete(
 
 // Cities
 router.get("/cities", cityController.getCities)
-router.get("/cities/country/:country_id", cityController.getCityByCountry)
+router.get("/cities/country/:country_id", cityController.getCitiesByCountry)
 
 // Countries
-
 router.get("/countries", countryController.getCoutries)
-
 module.exports = router;
