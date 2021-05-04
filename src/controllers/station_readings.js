@@ -31,18 +31,29 @@ const receiveReading = async (req, res) => {
   try {
     let data = {
       station_id: station.id,
-      Temperatura: body.Temperatura,
-      Presion: body.Presion,
-      Humedad: body.Humedad,
+      TEMP: body.TEMP,
+      PRESS: body.PRESS,
+      HR: body.HR,
     }
-    // Buscar contaminantes activos
+    // Search actual pollutants of the station
     const pollutants = station.Pollutants
     for (i = 0; i < pollutants.length; i++) {
-      const value = body[pollutants[i].name]
-      data[pollutants[i].name] = value
+      const pollutant = pollutants[i]
+      // Check if pollutant use auxiliar sensor
+      const jsonData = body[pollutants[i].name]
+      if (jsonData) {
+        if (pollutant.useAuxiliar) {
+          // Calculate concentration with model
+          const prom_r = jsonData['prom_r']
+          data[pollutants[i].name] = prom_r
+        }
+        else {
+          data[`${pollutants[i].name}`] = jsonData['prom']
+        }
+      }
     }
 
-    const reading = await db.Station_Readings.create(
+    await db.Station_Readings.create(
       data
     )
     return res.status(201).json({ message: "Datos ingresados correctamente" });

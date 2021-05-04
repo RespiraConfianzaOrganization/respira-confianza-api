@@ -15,6 +15,10 @@ module.exports = {
       unit: {
         type: Sequelize.STRING
       },
+      useAuxiliar: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
+      },
       created_at: {
         allowNull: false,
         defaultValue: Sequelize.fn('now'),

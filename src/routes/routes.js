@@ -8,6 +8,7 @@ const adminController = require("../controllers/admin");
 const pollutantController = require("../controllers/pollutant");
 const pollutantStationController = require("../controllers/pollutant_station");
 const stationController = require("../controllers/station");
+const applicationStationController = require("../controllers/application/station")
 const umbralsController = require("../controllers/umbrals");
 const stationReadingsController = require("../controllers/station_readings");
 
@@ -50,7 +51,7 @@ router.get(
 );
 router.get(
   "/stations/search",
-  stationController.searchStations,
+  applicationStationController.searchStations,
 );
 router.get(
   "/stations/:id",

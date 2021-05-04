@@ -24,6 +24,7 @@ module.exports = (sequelize, DataTypes) => {
   Pollutant.init({
     name: DataTypes.STRING,
     unit: DataTypes.STRING,
+    useAuxiliar: DataTypes.BOOLEAN,
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE,
   }, {

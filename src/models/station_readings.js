@@ -16,19 +16,30 @@ module.exports = (sequelize, DataTypes) => {
   };
   Station_Readings.init({
     station_id: DataTypes.INTEGER,
-    Temperatura: DataTypes.FLOAT,
-    Presion: DataTypes.FLOAT,
-    Humedad: DataTypes.FLOAT,
+    // Ambiental factors
+    TEMP: DataTypes.INTEGER,
+    PRESS: DataTypes.INTEGER,
+    HR: DataTypes.INTEGER,
+    // Pollutants
+    // MP10
     MP10: DataTypes.FLOAT,
+    // MP25
     MP25: DataTypes.FLOAT,
-    MP1: DataTypes.FLOAT,
+    // SO2
     SO2: DataTypes.FLOAT,
+    // O3
     O3: DataTypes.FLOAT,
+    // NO2
     NO2: DataTypes.FLOAT,
+    // NO
     NO: DataTypes.FLOAT,
+    // CO2
     CO2: DataTypes.FLOAT,
+    // CO
     CO: DataTypes.FLOAT,
+    // COV
     COV: DataTypes.FLOAT,
+    // Extras
     extra1: DataTypes.FLOAT,
     extra2: DataTypes.FLOAT,
     extra3: DataTypes.FLOAT,
