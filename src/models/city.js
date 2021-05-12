@@ -12,6 +12,8 @@ module.exports = (sequelize, DataTypes) => {
   };
   City.init({
     name: DataTypes.STRING,
+    latitude: DataTypes.FLOAT,
+    longitude: DataTypes.FLOAT,
     country_id: DataTypes.INTEGER,
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE,

@@ -11,6 +11,14 @@ module.exports = {
       name: {
         type: Sequelize.STRING
       },
+      latitude: {
+        allowNull: false,
+        type: Sequelize.FLOAT
+      },
+      longitude: {
+        allowNull: false,
+        type: Sequelize.FLOAT
+      },
       country_id: {
         allowNull: false,
         type: Sequelize.INTEGER,
