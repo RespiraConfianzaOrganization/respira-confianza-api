@@ -1,143 +1,24 @@
 const express = require("express");
 const router = express.Router();
 
-const authController = require("../controllers/auth");
-const countryController = require("../controllers/country")
-const cityController = require("../controllers/city")
-const adminController = require("../controllers/admin");
-const pollutantController = require("../controllers/pollutant");
-const pollutantStationController = require("../controllers/pollutant_station");
-const stationController = require("../controllers/station");
-const applicationStationController = require("../controllers/application/station")
-const umbralsController = require("../controllers/umbrals");
-const stationReadingsController = require("../controllers/station_readings");
+const adminRoutes = require("./admin")
+const authRoutes = require('./auth')
+const cityRoutes = require('./city')
+const countryRoutes = require("./country")
+const pollutantStationRoutes = require('./pollutant_station')
+const pollutantRoutes = require("./pollutant")
+const stationReadingRoutes = require('./station_readings')
+const stationRoutes = require('./stations')
+const umbralsRoutes = require('./umbrals')
 
-router.get("/auth/isAuthenticated", authController.isAuthenticated);
-router.get("/auth/isAuthenticatedAdmin", authController.isAuthenticatedAdmin);
-router.post("/auth/login", authController.login);
+adminRoutes.addRoutes(router)
+authRoutes.addRoutes(router)
+cityRoutes.addRoutes(router)
+countryRoutes.addRoutes(router)
+pollutantStationRoutes.addRoutes(router)
+pollutantRoutes.addRoutes(router)
+stationReadingRoutes.addRoutes(router)
+stationRoutes.addRoutes(router)
+umbralsRoutes.addRoutes(router)
 
-// ADMINS
-router.get(
-  "/admins",
-  authController.isAuthenticated,
-  adminController.getAdmins
-);
-router.get(
-  "/admins/:id",
-  authController.isAuthenticated,
-  adminController.getAdmin
-);
-router.post(
-  "/admins/new",
-  authController.isAuthenticated,
-  adminController.newAdmin
-);
-router.put(
-  "/admins/:id",
-  authController.isAuthenticated,
-  adminController.editAdmin
-);
-router.delete(
-  "/admins/:id",
-  authController.isAuthenticated,
-  adminController.deleteAdmin
-);
-
-// STATIONS
-router.get(
-  "/stations",
-  authController.isAuthenticated,
-  stationController.getStations
-);
-router.get(
-  "/stations/search",
-  applicationStationController.searchStations,
-);
-router.get(
-  "/stations/:id",
-  authController.isAuthenticated,
-  stationController.getStation
-);
-router.post(
-  "/stations/new",
-  authController.isAuthenticated,
-  stationController.newStation
-);
-router.put(
-  "/stations/:id",
-  authController.isAuthenticated,
-  stationController.editStation
-);
-router.delete(
-  "/stations/:id",
-  authController.isAuthenticated,
-  stationController.deleteStation
-);
-
-// Pollutants
-router.get(
-  "/pollutants",
-  authController.isAuthenticated,
-  pollutantController.getPollutants
-);
-
-// Umbrals
-router.get(
-  "/pollutant-umbrals",
-  authController.isAuthenticated,
-  umbralsController.getAllUmbrals
-);
-router.get(
-  "/pollutant-umbrals/:id",
-  authController.isAuthenticated,
-  umbralsController.getPollutantUmbrals
-);
-router.post(
-  "/pollutant-umbrals/new",
-  authController.isAuthenticated,
-  umbralsController.newPollutantUmbrals
-);
-router.put(
-  "/pollutant-umbrals/:id",
-  authController.isAuthenticated,
-  umbralsController.editPollutantUmbrals
-);
-router.delete(
-  "/pollutant-umbrals/:id",
-  authController.isAuthenticated,
-  umbralsController.deletePollutantUmbrals
-);
-
-// Readings
-router.get(
-  "/station-readings",
-  authController.isAuthenticated,
-  stationReadingsController.getStationReadings
-);
-
-router.post(
-  "/station-readings",
-  stationReadingsController.receiveReading
-);
-
-// Pollutant Station
-
-router.post(
-  "/pollutant-station/new",
-  authController.isAuthenticated,
-  pollutantStationController.newPoluttantstation
-);
-
-router.delete(
-  "/pollutant-station/:station_id&:pollutant_id",
-  authController.isAuthenticated,
-  pollutantStationController.deletePoluttantStation
-);
-
-// Cities
-router.get("/cities", cityController.getCities)
-router.get("/cities/country/:country_id", cityController.getCitiesByCountry)
-
-// Countries
-router.get("/countries", countryController.getCoutries)
-module.exports = router;
+module.exports = router
