@@ -5,11 +5,11 @@ const addRoutes = (router) => {
   router.post(
     "/pollutant-station/new",
     authController.isAuthenticated,
-    pollutantStationController.newPoluttantstation
+    pollutantStationController.newPollutantStation
   );
 
   router.delete(
-    "/pollutant-station/:station_id&:pollutant_id",
+    "/pollutant-station/:station_id&:pollutant",
     authController.isAuthenticated,
     pollutantStationController.deletePoluttantStation
   );

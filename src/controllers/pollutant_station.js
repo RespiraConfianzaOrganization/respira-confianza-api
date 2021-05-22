@@ -1,12 +1,12 @@
 const models = require("../models");
 
-const newPoluttantstation = async (req, res) => {
-  const { station_id, pollutant_id } = req.body;
+const newPollutantStation = async (req, res) => {
+  const { station_id, pollutant, useAuxiliar } = req.body;
 
   if (!station_id) {
     return res.status(400).json({ message: "Debe ingresar un estación" });
   }
-  if (!pollutant_id) {
+  if (!pollutant) {
     return res.status(400).json({ message: "Debe ingresar un contaminante" });
   }
 
@@ -14,22 +14,22 @@ const newPoluttantstation = async (req, res) => {
     where: { id: station_id },
   });
 
-  const pollutant = await models.Pollutant.findOne({
-    where: { id: pollutant_id },
+  const pollutantInstance = await models.Pollutant.findOne({
+    where: { name: pollutant },
   });
 
   if (!station) {
     return res.status(400).json({ message: "Estación ingresada no existe" });
   }
 
-  if (!pollutant) {
+  if (!pollutantInstance) {
     return res
       .status(400)
       .json({ message: "Contaminante ingresado no existe" });
   }
 
   const oldRecord = await models.Pollutant_Station.findOne({
-    where: { pollutant_id, station_id },
+    where: { pollutant, station_id },
   });
 
   if (oldRecord) {
@@ -39,41 +39,42 @@ const newPoluttantstation = async (req, res) => {
   }
 
   const pollutantStation = await models.Pollutant_Station.create({
-    pollutant_id,
+    pollutant,
     station_id,
+    useAuxiliar
   });
 
-  return res.status(201).json({ pollutantStation, pollutant });
+  return res.status(201).json({ pollutantStation, pollutant: pollutantInstance });
 };
 
 const deletePoluttantStation = async (req, res) => {
-  const { station_id, pollutant_id } = req.params;
+  const { station_id, pollutant } = req.params;
 
-  if (!station_id || !pollutant_id) {
+  if (!station_id || !pollutant) {
     return res
       .status(400)
       .json({ message: "Debe ingresar estación y contaminante" });
   }
   const pollutantStation = await models.Pollutant_Station.findOne({
-    where: { pollutant_id, station_id },
+    where: { pollutant, station_id },
   });
   if (!pollutantStation) {
     return res
       .status(404)
       .json({ message: "No existe ese contaminante en la estación" });
   }
-  const pollutant = await models.Pollutant.findOne({
-    where: { id: pollutant_id },
+  const pollutantInstance = await models.Pollutant.findOne({
+    where: { name: pollutant },
   });
 
   await pollutantStation.destroy();
   return res.status(200).json({
     message: "Contaminante eliminado de la estación correctamente",
-    pollutant,
+    pollutant: pollutantInstance,
   });
 };
 
 module.exports = {
-  newPoluttantstation,
+  newPollutantStation,
   deletePoluttantStation,
 };

@@ -22,6 +22,7 @@ const getPollutantUmbrals = async (req, res) => {
             model: models.Pollutant
         }
     })
+
     if (!pollutantUmbrals) {
         return res.status(404).json({ message: "Umbrales de contaminante no encontrados" })
     }
@@ -29,9 +30,9 @@ const getPollutantUmbrals = async (req, res) => {
 }
 
 const newPollutantUmbrals = async (req, res) => {
-    const { pollutant_id, good, moderate, unhealthy, very_unhealthy, dangerous } = req.body
+    const { pollutant, good, moderate, unhealthy, very_unhealthy, dangerous } = req.body
 
-    if (!pollutant_id) {
+    if (!pollutant) {
         return res.status(400).json({ message: "Debe elegir un contaminante" })
     }
     if (!good || !moderate || !unhealthy || !very_unhealthy || !dangerous) {
@@ -39,7 +40,7 @@ const newPollutantUmbrals = async (req, res) => {
     }
     let pollutantUmbrals = await models.Umbrals.findOne({
         where: {
-            pollutant_id
+            pollutant
         },
         include: {
             model: models.Pollutant
@@ -49,7 +50,7 @@ const newPollutantUmbrals = async (req, res) => {
         return res.status(400).json({ message: `Ya existe una definición de umbrales para el contaminante ${pollutantUmbrals.Pollutant.name}` })
     }
     pollutantUmbrals = await models.Umbrals.create({
-        pollutant_id, good, moderate, unhealthy, very_unhealthy, dangerous
+        pollutant, good, moderate, unhealthy, very_unhealthy, dangerous
     })
     return res.status(201).json({ pollutantUmbrals })
 }
@@ -87,15 +88,12 @@ const deletePollutantUmbrals = async (req, res) => {
     }
     const pollutantUmbrals = await models.Umbrals.findOne({
         where: { id },
-        include: {
-            model: models.Pollutant
-        }
     })
     if (!pollutantUmbrals) {
         return res.status(404).json({ message: "Umbrales de contaminante no encontrado" })
     }
     await pollutantUmbrals.destroy();
-    return res.status(200).json({ message: `Umbrales de contaminante ${pollutantUmbrals.Pollutant.name} eliminados correctamente` })
+    return res.status(200).json({ message: `Umbrales de contaminante ${pollutantUmbrals.pollutant} eliminados correctamente` })
 }
 
 module.exports = {

@@ -16,20 +16,25 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "pollutant",
         otherKey: "station_id",
       });
+      Pollutant.belongsToMany(models.Station, {
+        through: "Pollutant_Station",
+        foreignKey: "pollutant",
+        otherKey: "station_id",
+      });
       Pollutant.hasOne(models.Umbrals, { foreignKey: 'pollutant', onDelete: 'cascade', hooks: true })
       Pollutant.hasMany(models.Pollutant_Station, { foreignKey: "pollutant" });
 
     }
   };
   Pollutant.init({
-    name: DataTypes.STRING,
+    name: { primaryKey: true, type: DataTypes.STRING },
     unit: DataTypes.STRING,
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE,
   }, {
     sequelize,
     modelName: 'Pollutant',
-    timestamps: false
+    timestamps: false,
   });
   return Pollutant;
 };

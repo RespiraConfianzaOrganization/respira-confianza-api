@@ -32,6 +32,10 @@ const addRoutes = (router) => {
     authController.isAuthenticated,
     stationController.deleteStation
   );
+  router.get(
+    "/stations/:id/status",
+    applicationStationController.statusStation
+  );
 }
 
 module.exports = { addRoutes }

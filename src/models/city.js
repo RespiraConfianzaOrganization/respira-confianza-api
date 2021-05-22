@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     latitude: DataTypes.FLOAT,
     longitude: DataTypes.FLOAT,
-    country: DataTypes.INTEGER,
+    country: DataTypes.STRING,
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE,
   }, {

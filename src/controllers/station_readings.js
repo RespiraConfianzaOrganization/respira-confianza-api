@@ -21,9 +21,11 @@ const receiveReading = async (req, res) => {
   //Validate private Key
   const station = await models.Station.findOne({
     where: { private_key },
-    include: {
-      model: models.Pollutant,
-    },
+    include: [
+      {
+        model: models.Pollutant_Station,
+      }
+    ],
   });
   if (!station) {
     return res.status(404).json({ message: "Clave incorrecta" });
@@ -36,19 +38,19 @@ const receiveReading = async (req, res) => {
       HR: body.HR,
     }
     // Search actual pollutants of the station
-    const pollutants = station.Pollutants
-    for (i = 0; i < pollutants.length; i++) {
-      const pollutant = pollutants[i]
+    const pollutantStations = station.Pollutant_Stations
+    for (i = 0; i < pollutantStations.length; i++) {
+      const pollutantStation = pollutantStations[i]
       // Check if pollutant use auxiliar sensor
-      const jsonData = body[pollutants[i].name]
+      const jsonData = body[pollutantStation.pollutant]
       if (jsonData) {
-        if (pollutant.useAuxiliar) {
+        if (pollutantStation.useAuxiliar) {
           // Calculate concentration with model
           const prom_r = jsonData['prom_r']
-          data[pollutants[i].name] = prom_r
+          data[pollutantStation.pollutant] = prom_r
         }
         else {
-          data[`${pollutants[i].name}`] = jsonData['prom']
+          data[`${pollutantStation.pollutant}`] = jsonData['prom']
         }
       }
     }

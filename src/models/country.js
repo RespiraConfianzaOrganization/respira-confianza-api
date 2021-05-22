@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Country.init({
-    name: DataTypes.STRING,
+    name: { primaryKey: true, type: DataTypes.STRING },
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE,
   }, {

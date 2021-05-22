@@ -38,7 +38,7 @@ const getAdmin = async (req, res) => {
 }
 
 const newAdmin = async (req, res) => {
-    const { first_name, last_name, password, email, city_id, country } = req.body
+    const { first_name, last_name, password, email, city_id } = req.body
 
     if (!password || !email || !first_name || !last_name) {
         return res.status(400).json({ message: "Debe llenar los campos obligatorios usuario, contraseña, email, nombre y apellido" })
@@ -65,14 +65,13 @@ const newAdmin = async (req, res) => {
         password: hashPassword,
         email,
         city_id,
-        country
     })
     return res.status(201).json({ admin })
 }
 
 const editAdmin = async (req, res) => {
     const id = req.params.id
-    const { first_name, last_name, password, email, city_id, country } = req.body
+    const { first_name, last_name, password, email, city_id } = req.body
 
     if (!id) {
         return res.status(400).json({ message: "Debe ingresar un id" })
@@ -91,7 +90,6 @@ const editAdmin = async (req, res) => {
     admin.email = email ? email : admin.email
     admin.username = email ? email : admin.email
     admin.city_id = city_id ? city_id : admin.city_id
-    admin.country = country ? country : admin.country
 
     await admin.save();
     return res.status(200).json({ admin })

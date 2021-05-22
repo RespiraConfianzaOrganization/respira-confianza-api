@@ -20,9 +20,9 @@ const getCities = async (req, res) => {
 };
 
 const getCitiesByCountry = async (req, res) => {
-  const { country_id } = req.params
+  const { country } = req.params
   const cities = await models.City.findAll({
-    where: { country_id }
+    where: { country }
   });
   return res.status(200).json({ cities })
 }
