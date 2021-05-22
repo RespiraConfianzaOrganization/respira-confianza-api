@@ -13,18 +13,17 @@ module.exports = (sequelize, DataTypes) => {
       // define association here}      
       Pollutant.belongsToMany(models.Station, {
         through: "Pollutant_Station",
-        foreignKey: "pollutant_id",
+        foreignKey: "pollutant",
         otherKey: "station_id",
       });
-      Pollutant.hasOne(models.Umbrals, { foreignKey: 'pollutant_id', onDelete: 'cascade', hooks: true })
-      Pollutant.hasMany(models.Pollutant_Station, { foreignKey: "pollutant_id" });
+      Pollutant.hasOne(models.Umbrals, { foreignKey: 'pollutant', onDelete: 'cascade', hooks: true })
+      Pollutant.hasMany(models.Pollutant_Station, { foreignKey: "pollutant" });
 
     }
   };
   Pollutant.init({
     name: DataTypes.STRING,
     unit: DataTypes.STRING,
-    useAuxiliar: DataTypes.BOOLEAN,
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE,
   }, {

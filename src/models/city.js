@@ -5,7 +5,7 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class City extends Model {
     static associate(models) {
-      City.belongsTo(models.Country, { foreignKey: 'country_id' })
+      City.belongsTo(models.Country, { foreignKey: 'country' })
       City.hasMany(models.Station, { foreignKey: 'city_id' })
       City.hasMany(models.Admin, { foreignKey: 'city_id' })
     }
@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     latitude: DataTypes.FLOAT,
     longitude: DataTypes.FLOAT,
-    country_id: DataTypes.INTEGER,
+    country: DataTypes.INTEGER,
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE,
   }, {

@@ -19,14 +19,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.FLOAT
       },
-      country_id: {
+      country: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         references: {
           model: {
             tableName: 'Countries',
           },
-          key: 'id'
+          key: 'name'
         },
       },
       created_at: {

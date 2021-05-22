@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Station.belongsToMany(models.Pollutant, {
         through: "Pollutant_Station",
         foreignKey: "station_id",
-        otherKey: "pollutant_id",
+        otherKey: "pollutant",
       });
       Station.hasMany(models.Pollutant_Station, { foreignKey: "station_id" });
       Station.hasMany(models.Pollutant_Station, { foreignKey: "station_id" });

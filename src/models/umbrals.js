@@ -11,11 +11,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Umbrals.belongsTo(models.Pollutant, { foreignKey: 'pollutant_id' })
+      Umbrals.belongsTo(models.Pollutant, { foreignKey: 'pollutant' })
     }
   };
   Umbrals.init({
-    pollutant_id: DataTypes.INTEGER,
+    pollutant: DataTypes.STRING,
     good: DataTypes.FLOAT,
     moderate: DataTypes.FLOAT,
     unhealthy: DataTypes.FLOAT,

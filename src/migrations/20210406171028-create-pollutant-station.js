@@ -18,14 +18,18 @@ module.exports = {
           key: 'id'
         },
       },
-      pollutant_id: {
-        type: Sequelize.INTEGER,
+      pollutant: {
+        type: Sequelize.STRING,
         references: {
           model: {
             tableName: 'Pollutants',
           },
-          key: 'id'
+          key: 'name'
         },
+      },
+      useAuxiliar: {
+        allowNull: false,
+        type: Sequelize.BOOLEAN,
       },
       created_at: {
         allowNull: false,

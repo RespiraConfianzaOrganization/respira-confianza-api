@@ -2,22 +2,14 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.createTable('Pollutants', {
-      id: {
-        allowNull: false,
-        autoIncrement: true,
-        primaryKey: true,
-        type: Sequelize.INTEGER
-      },
       name: {
+        primaryKey: true,
         allowNull: false,
         type: Sequelize.STRING
       },
       unit: {
-        type: Sequelize.STRING
-      },
-      useAuxiliar: {
         allowNull: false,
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.STRING
       },
       created_at: {
         allowNull: false,

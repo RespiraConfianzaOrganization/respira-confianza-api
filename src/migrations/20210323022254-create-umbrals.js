@@ -8,14 +8,14 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      pollutant_id: {
+      pollutant: {
         allowNull: false,
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         references: {
           model: {
             tableName: 'Pollutants',
           },
-          key: 'id'
+          key: 'name'
         },
       },
       good: {

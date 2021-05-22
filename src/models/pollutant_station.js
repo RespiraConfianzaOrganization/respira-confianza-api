@@ -11,13 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Pollutant_Station.belongsTo(models.Pollutant, { foreignKey: 'pollutant_id' })
+      Pollutant_Station.belongsTo(models.Pollutant, { foreignKey: 'pollutant' })
       Pollutant_Station.belongsTo(models.Station, { foreignKey: 'station_id' })
     }
   };
   Pollutant_Station.init({
     station_id: DataTypes.INTEGER,
-    pollutant_id: DataTypes.INTEGER,
+    pollutant: DataTypes.STRING,
+    useAuxiliar: DataTypes.BOOLEAN,
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE,
   }, {
