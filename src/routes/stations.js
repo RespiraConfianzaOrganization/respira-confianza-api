@@ -9,10 +9,6 @@ const addRoutes = (router) => {
     stationController.getStations
   );
   router.get(
-    "/stations/search",
-    applicationStationController.searchStations,
-  );
-  router.get(
     "/stations/:id",
     authController.isAuthenticated,
     stationController.getStation
@@ -32,9 +28,21 @@ const addRoutes = (router) => {
     authController.isAuthenticated,
     stationController.deleteStation
   );
+
+  //APP 
   router.get(
     "/stations/:id/status",
-    applicationStationController.statusStation
+    applicationStationController.stationStatus
+  );
+
+  router.get(
+    "/stations/search",
+    applicationStationController.searchStations,
+  );
+
+  router.get(
+    "/stations/status/:pollutant",
+    applicationStationController.stationStatusByPollutant,
   );
 }
 
