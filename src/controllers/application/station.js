@@ -17,7 +17,9 @@ const searchStations = async (req, res) => {
 
 const stationStatus = async (req, res) => {
   const { id } = req.params;
+  const { detail } = req.query
   let pollutants = [];
+  let readings = [];
 
   if (!id) {
     return res.status(400).json({ message: 'Debe ingresar un id' });
@@ -38,9 +40,16 @@ const stationStatus = async (req, res) => {
   }
 
   pollutants = station.Pollutants
-  let { readings } = await last24HoursByStation({ stationId: id, pollutants })
+  if (detail === 'day') {
+    readings = await last24HoursStatusByStation({ stationId: id, pollutants })
+  }
+  else if (detail === 'month') {
+    readings = await lastMonthStatusByStation({ stationId: id, pollutants })
+  }
 
-  return res.status(200).json({ station, pollutants, readings });
+  const readingsLastHour = await lastHourStatusByStation({ stationId: id, pollutants })
+
+  return res.status(200).json({ station, pollutants, readingsLastHour, graphReadings: readings });
 }
 
 const stationStatusByPollutant = async (req, res) => {
@@ -71,7 +80,38 @@ const stationStatusByPollutant = async (req, res) => {
   return res.status(200).json({ stations, umbrals, readings });
 }
 
-const last24HoursByStation = async ({ stationId, pollutants }) => {
+const lastHourStatusByStation = async ({ stationId, pollutants }) => {
+  //LAST 24 HOURS READINGS 
+  const oneHourBeforeDate = moment().subtract(1, "hour").format("YYYY-MM-DD HH:mm:ss");
+  const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
+
+  const pollutantsNames = pollutants.map(pollutant => pollutant.name)
+  let averages = ''
+  if (pollutantsNames.length > 0) {
+    averages += ', '
+    averages += pollutantsNames.map(pollutant => `TRUNC(AVG("${pollutant}")) as "AVG${pollutant}"`).join(", ")
+  }
+
+  const rawQuery = `
+    SELECT "station_id", max(to_char(date_trunc('hour', recorded_at),'HH24:00')) as hour ${averages}
+    FROM ( 
+      SELECT *
+      FROM "Station_Readings"
+      WHERE (station_id= :stationId AND recorded_at between :oneHourBeforeDate and :currentDate)) AS RECORDS
+    GROUP BY station_id`
+
+  const readings = await models.sequelize.query(rawQuery, {
+    raw: true,
+    type: sequelize.QueryTypes.SELECT,
+    replacements: {
+      stationId, currentDate, oneHourBeforeDate
+    }
+  })
+
+  return readings
+}
+
+const last24HoursStatusByStation = async ({ stationId, pollutants }) => {
   //LAST 24 HOURS READINGS 
   const yesterdayDate = moment().subtract(1, "days").format("YYYY-MM-DD HH:mm:ss");
   const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -103,7 +143,44 @@ const last24HoursByStation = async ({ stationId, pollutants }) => {
       stationId, currentDate, yesterdayDate
     }
   })
-  return { readings }
+
+  return readings
+}
+
+const lastMonthStatusByStation = async ({ stationId, pollutants }) => {
+  //LAST 24 HOURS READINGS 
+  const lastMonthDate = moment().subtract(1, 'months').format("YYYY-MM-DD");
+  const currentDate = moment().format("YYYY-MM-DD");
+
+  const pollutantsNames = pollutants.map(pollutant => pollutant.name)
+  let averages = ''
+  if (pollutantsNames.length > 0) {
+    averages += ', '
+    averages += pollutantsNames.map(pollutant => `TRUNC(AVG("${pollutant}")) as "AVG${pollutant}"`).join(", ")
+  }
+
+  const rawQuery = `
+    SELECT * 
+    FROM (
+      SELECT to_char(time, 'YYYY-MM-DD') as date FROM generate_series(:lastMonthDate, :currentDate, interval '1' day) time ) as LASTHOURS
+      LEFT JOIN (
+        SELECT to_char(recorded_at,'YYYY-MM-DD') as datetime ${averages}
+        FROM ( 
+          SELECT *
+          FROM "Station_Readings"
+          WHERE (station_id= :stationId AND recorded_at between :lastMonthDate and :currentDate)) AS RECORDS
+        GROUP BY datetime) AS GROUPEDRECORDS
+    on LASTHOURS.date=GROUPEDRECORDS.datetime;`
+
+  const readings = await models.sequelize.query(rawQuery, {
+    raw: true,
+    type: sequelize.QueryTypes.SELECT,
+    replacements: {
+      stationId, currentDate, lastMonthDate
+    }
+  })
+
+  return readings
 }
 
 module.exports = {
