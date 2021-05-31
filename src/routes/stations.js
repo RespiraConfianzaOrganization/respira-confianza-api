@@ -8,6 +8,7 @@ const addRoutes = (router) => {
     authController.isAuthenticated,
     stationController.getStations
   );
+
   router.get(
     "/stations/:id",
     authController.isAuthenticated,
@@ -43,6 +44,12 @@ const addRoutes = (router) => {
   router.get(
     "/stations/status/:pollutant",
     applicationStationController.stationStatusByPollutant,
+  );
+
+  //Public
+  router.get(
+    "/public/stations",
+    stationController.getStationsPublic
   );
 }
 

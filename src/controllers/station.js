@@ -16,6 +16,21 @@ const getStations = async (req, res) => {
   return res.status(200).json({ stations });
 };
 
+const getStationsPublic = async (req, res) => {
+  //TODO: PAGINATION
+  const stations = await models.Station.findAll({
+    attributes: {
+      exclude: ['private_key', 'created_at', 'updated_at']
+    },
+    include: {
+      model: models.City,
+      attributes: ['name']
+    },
+  });
+  return res.status(200).json({ stations });
+};
+
+
 const getStation = async (req, res) => {
   const id = req.params.id;
 
@@ -168,6 +183,7 @@ const deleteStation = async (req, res) => {
 
 module.exports = {
   getStations,
+  getStationsPublic,
   getStation,
   newStation,
   editStation,
