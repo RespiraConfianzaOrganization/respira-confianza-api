@@ -16,8 +16,7 @@ const searchStations = async (req, res) => {
 }
 
 const stationStatus = async (req, res) => {
-  const { id } = req.params;
-  const { detail } = req.query
+  const { id } = req.params
   let pollutants = [];
   let readings = [];
 
@@ -26,13 +25,20 @@ const stationStatus = async (req, res) => {
   }
 
   const station = await models.Station.findOne({
+    attributes: { exclude: ['private_key', 'created_at', 'updated_at'] },
     where: {
       id,
     },
-    include: {
-      model: models.Pollutant,
-      attributes: ['name', 'unit']
-    }
+    include: [
+      {
+        model: models.Pollutant,
+        attributes: ['name', 'unit', 'extendedName']
+      },
+      {
+        model: models.City,
+        attributes: ['name']
+      }
+    ]
   });
 
   if (!station) {
@@ -40,15 +46,8 @@ const stationStatus = async (req, res) => {
   }
 
   pollutants = station.Pollutants
-  if (detail === 'day') {
-    readings = await last24HoursStatusByStation({ stationId: id, pollutants })
-  }
-  else if (detail === 'month') {
-    readings = await lastMonthStatusByStation({ stationId: id, pollutants })
-  }
 
   const readingsLastHour = await lastHourStatusByStation({ stationId: id, pollutants })
-
   return res.status(200).json({ station, pollutants, readingsLastHour, graphReadings: readings });
 }
 
@@ -111,7 +110,30 @@ const lastHourStatusByStation = async ({ stationId, pollutants }) => {
   return readings
 }
 
-const last24HoursStatusByStation = async ({ stationId, pollutants }) => {
+const last24HoursStatusByStation = async (req, res) => {
+  const { id } = req.params;
+  let pollutants = [];
+
+  if (!id) {
+    return res.status(400).json({ message: 'Debe ingresar un id' });
+  }
+
+  const station = await models.Station.findOne({
+    attributes: { exclude: ['private_key', 'created_at', 'updated_at'] },
+    where: {
+      id,
+    },
+    include: {
+      model: models.Pollutant,
+      attributes: ['name', 'unit']
+    }
+  });
+
+  if (!station) {
+    return res.status(400).json({ message: 'Estación no encontrada' });
+  }
+
+  pollutants = station.Pollutants
   //LAST 24 HOURS READINGS 
   const yesterdayDate = moment().subtract(1, "days").format("YYYY-MM-DD HH:mm:ss");
   const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -140,14 +162,37 @@ const last24HoursStatusByStation = async ({ stationId, pollutants }) => {
     raw: true,
     type: sequelize.QueryTypes.SELECT,
     replacements: {
-      stationId, currentDate, yesterdayDate
+      stationId: id, currentDate, yesterdayDate
     }
   })
 
-  return readings
+  return res.status(200).json({ readings });
 }
 
-const lastMonthStatusByStation = async ({ stationId, pollutants }) => {
+const lastMonthStatusByStation = async (req, res) => {
+  const { id } = req.params;
+  let pollutants = [];
+
+  if (!id) {
+    return res.status(400).json({ message: 'Debe ingresar un id' });
+  }
+
+  const station = await models.Station.findOne({
+    attributes: { exclude: ['private_key', 'created_at', 'updated_at'] },
+    where: {
+      id,
+    },
+    include: {
+      model: models.Pollutant,
+      attributes: ['name', 'unit']
+    }
+  });
+
+  if (!station) {
+    return res.status(400).json({ message: 'Estación no encontrada' });
+  }
+
+  pollutants = station.Pollutants
   //LAST 24 HOURS READINGS 
   const lastMonthDate = moment().subtract(1, 'months').format("YYYY-MM-DD");
   const currentDate = moment().format("YYYY-MM-DD");
@@ -176,15 +221,17 @@ const lastMonthStatusByStation = async ({ stationId, pollutants }) => {
     raw: true,
     type: sequelize.QueryTypes.SELECT,
     replacements: {
-      stationId, currentDate, lastMonthDate
+      stationId: id, currentDate, lastMonthDate
     }
   })
 
-  return readings
+  return res.status(200).json({ readings });
 }
 
 module.exports = {
   searchStations,
   stationStatus,
-  stationStatusByPollutant
+  stationStatusByPollutant,
+  last24HoursStatusByStation,
+  lastMonthStatusByStation
 }

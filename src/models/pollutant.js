@@ -23,11 +23,11 @@ module.exports = (sequelize, DataTypes) => {
       });
       Pollutant.hasOne(models.Umbrals, { foreignKey: 'pollutant', onDelete: 'cascade', hooks: true })
       Pollutant.hasMany(models.Pollutant_Station, { foreignKey: "pollutant" });
-
     }
   };
   Pollutant.init({
     name: { primaryKey: true, type: DataTypes.STRING },
+    extendedName: DataTypes.STRING,
     unit: DataTypes.STRING,
     created_at: DataTypes.DATE,
     updated_at: DataTypes.DATE,

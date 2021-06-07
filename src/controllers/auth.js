@@ -19,7 +19,7 @@ const login = async (req, res) => {
 
     if (!admin) {
         return res.status(404).json({
-            message: "Usuario no existe"
+            message: "Usuario y/o contraseña incorrectos"
         })
     }
 
@@ -29,7 +29,7 @@ const login = async (req, res) => {
     )
     if (!comparePassword) {
         return res.status(404).json({
-            message: "Usuario y/o contraseña no coinciden"
+            message: "Usuario y/o contraseña incorrectos"
         })
     }
     try {
