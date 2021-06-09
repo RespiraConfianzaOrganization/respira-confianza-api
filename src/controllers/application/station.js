@@ -60,11 +60,17 @@ const stationStatusByPollutant = async (req, res) => {
 
   const stations = await models.Station.findAll({
     attributes: ["id", "name", "latitude", "longitude"],
-    include: {
-      model: models.Pollutant,
-      attributes: ['name', 'unit'],
-      where: { name: pollutant }
-    }
+    include: [
+      {
+        model: models.Pollutant,
+        attributes: ['name', 'unit'],
+        where: { name: pollutant },
+      },
+      {
+        model: models.City,
+        attributes: ['name'],
+      }
+    ]
   });
 
   const umbrals = await models.Umbrals.findOne({

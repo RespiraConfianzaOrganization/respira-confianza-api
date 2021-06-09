@@ -25,7 +25,7 @@ const addRoutes = (router) => {
   );
 
   router.get(
-    "/stations/status/:pollutant",
+    "/stations/status/pollutant/:pollutant",
     applicationStationController.stationStatusByPollutant,
   );
 
