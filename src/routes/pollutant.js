@@ -1,7 +1,7 @@
-const authController = require("../controllers/auth");
 const pollutantController = require("../controllers/pollutant");
 
 const addRoutes = (router) => {
+  //Public
   router.get(
     "/pollutants",
     pollutantController.getPollutants

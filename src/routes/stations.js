@@ -1,32 +1,32 @@
 const authController = require("../controllers/auth");
 const stationController = require("../controllers/station");
-const applicationStationController = require("../controllers/application/station")
+const publicStationController = require("../controllers/public/station")
 
 const addRoutes = (router) => {
   // Public 
   router.get(
     "/stations/:id/status",
-    applicationStationController.stationStatus
+    publicStationController.stationStatus
   );
 
   router.get(
     "/stations/:id/status/last24Hours",
-    applicationStationController.last24HoursStatusByStation
+    publicStationController.last24HoursStatusByStation
   );
 
   router.get(
     "/stations/:id/status/lastMonth",
-    applicationStationController.lastMonthStatusByStation
+    publicStationController.lastMonthStatusByStation
   );
 
   router.get(
     "/stations/search",
-    applicationStationController.searchStations,
+    publicStationController.searchStations,
   );
 
   router.get(
     "/stations/status/pollutant/:pollutant",
-    applicationStationController.stationStatusByPollutant,
+    publicStationController.stationStatusByPollutant,
   );
 
   router.get(

@@ -1,7 +1,14 @@
 const authController = require("../controllers/auth");
 const umbralsController = require("../controllers/umbrals");
+const publicUmbralsController = require("../controllers/public/umbrals");
 
 const addRoutes = (router) => {
+  //PUBLIC
+  router.get(
+    "/pollutant-umbrals/pollutant/:pollutant",
+    publicUmbralsController.getUmbralsByPollutant
+  );
+  //PRIVATE
   router.get(
     "/pollutant-umbrals",
     authController.isAuthenticated,

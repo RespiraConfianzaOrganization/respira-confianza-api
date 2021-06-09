@@ -1,5 +1,4 @@
 const models = require('../models');
-const { Op } = require("sequelize");
 
 const getAllUmbrals = async (req, res) => {
     const pollutantUmbrals = await models.Umbrals.findAll({
