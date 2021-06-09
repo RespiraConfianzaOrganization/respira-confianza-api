@@ -4,9 +4,9 @@ module.exports = {
     await queryInterface.createTable('Stations', {
       id: {
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        defaultValue: Sequelize.literal('uuid_generate_v4()'),
+        type: Sequelize.UUID
       },
       private_key: {
         allowNull: false,
