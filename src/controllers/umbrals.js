@@ -1,4 +1,5 @@
 const models = require('../models');
+const logger = require("../../logger")
 
 const getAllUmbrals = async (req, res) => {
     const pollutantUmbrals = await models.Umbrals.findAll({
@@ -51,6 +52,7 @@ const newPollutantUmbrals = async (req, res) => {
     pollutantUmbrals = await models.Umbrals.create({
         pollutant, good, moderate, unhealthy, very_unhealthy, dangerous
     })
+    logger.info('newPollutantUmbrals ' + 200);
     return res.status(201).json({ pollutantUmbrals })
 }
 
@@ -76,6 +78,7 @@ const editPollutantUmbrals = async (req, res) => {
     pollutantUmbrals.dangerous = dangerous ? dangerous : pollutantUmbrals.dangerous
 
     await pollutantUmbrals.save();
+    logger.info('editPollutantUmbrals ' + 200);
     return res.status(200).json({ pollutantUmbrals })
 }
 
@@ -92,6 +95,8 @@ const deletePollutantUmbrals = async (req, res) => {
         return res.status(404).json({ message: "Umbrales de contaminante no encontrado" })
     }
     await pollutantUmbrals.destroy();
+
+    logger.info('deletePollutantUmbrals ' + 200);
     return res.status(200).json({ message: `Umbrales de contaminante ${pollutantUmbrals.pollutant} eliminados correctamente` })
 }
 

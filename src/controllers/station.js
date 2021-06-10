@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const models = require("../models");
 const { Op } = require("sequelize");
+const logger = require("../../logger")
 
 const getStations = async (req, res) => {
   //TODO: PAGINATION
@@ -106,6 +107,7 @@ const newStation = async (req, res) => {
     longitude,
     status,
   });
+  logger.info('newStation ' + 201);
   return res.status(201).json({ station });
 };
 
@@ -162,6 +164,7 @@ const editStation = async (req, res) => {
   station.status = status ? status : station.status;
 
   await station.save();
+  logger.info('editStation ' + 200);
   return res.status(200).json({ station });
 };
 
@@ -178,6 +181,7 @@ const deleteStation = async (req, res) => {
     return res.status(404).json({ message: "Estación no encontrada" });
   }
   await station.destroy();
+  logger.info('deleteStation ' + 200);
   return res.status(200).json({ message: "Estación eliminada correctamente" });
 };
 

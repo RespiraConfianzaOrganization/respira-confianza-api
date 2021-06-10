@@ -34,9 +34,10 @@ const login = async (req, res) => {
     }
     try {
         const token = await jwt.sign({ data: username }, TOKENKEY, { expiresIn: '1h' })
+        logger.info('login ' + 200 + " " + username);
         return res.status(200).json({ token, user: admin })
     } catch (err) {
-        logger.error(err)
+        logger.error(err, 500)
         return res.status(500).json({ message: 'Hubo un error. Vuelve a intentarlo más tarde' })
     }
 }
@@ -85,5 +86,5 @@ const isAuthenticatedAdmin = async (req, res, next) => {
 module.exports = {
     login,
     isAuthenticated,
-    isAuthenticatedAdmin
+    isAuthenticatedAdmin,
 }

@@ -9,11 +9,9 @@ module.exports = createLogger({
         NODE_ENV === 'development' ? format.colorize() : format.uncolorize(),
         format.simple(),
         format.timestamp(),
-        format.printf(info => `[${info.timestamp}] ${info.level} ${info.message}`),
+        format.printf(info => `[${info.timestamp}] ${info.message}`),
     ),
     transports: [
-        new transports.Console({
-            level: 'debug'
-        })
+        new transports.File({ filename: 'combined.log' })
     ]
 })

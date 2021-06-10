@@ -1,4 +1,5 @@
 const models = require("../models");
+const logger = require("../../logger")
 
 const newPollutantStation = async (req, res) => {
   const { station_id, pollutant, useAuxiliar } = req.body;
@@ -43,7 +44,7 @@ const newPollutantStation = async (req, res) => {
     station_id,
     useAuxiliar
   });
-
+  logger.info('newPollutantStation ' + 201);
   return res.status(201).json({ pollutantStation, pollutant: pollutantInstance });
 };
 
@@ -68,6 +69,8 @@ const deletePoluttantStation = async (req, res) => {
   });
 
   await pollutantStation.destroy();
+  logger.info('deletePoluttantStation ' + 200);
+
   return res.status(200).json({
     message: "Contaminante eliminado de la estación correctamente",
     pollutant: pollutantInstance,

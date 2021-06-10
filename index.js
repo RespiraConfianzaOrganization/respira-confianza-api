@@ -23,11 +23,12 @@ app.use(xmlparser());
 
 app.use(morgan('[:date[iso]] :method :url :status :res[content-length] - :response-time ms'));
 
+/*
 var corsOptions = {
   origin: 'http://localhost:3000',
   optionsSuccessStatus: 200,
   methods: "GET, PUT, POST, DELETE"
-}
+}*/
 app.use(cors());
 
 // Routes

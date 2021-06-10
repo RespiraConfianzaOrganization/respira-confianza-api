@@ -1,9 +1,11 @@
 const models = require('../../models');
+const logger = require("../../../logger")
 
 const receiveReading = async (req, res) => {
   const private_key = req.body.privateKey
   const body = req.body
   if (!private_key) {
+    logger.info('receiveReading ' + 400);
     return res.status(400).json({ message: "Debe ingresar la clave secreta de la estación" });
   }
   //Validate private Key
@@ -16,6 +18,7 @@ const receiveReading = async (req, res) => {
     ],
   });
   if (!station) {
+    logger.warning('receiveReading ' + 404);
     return res.status(404).json({ message: "Clave incorrecta" });
   }
   try {
@@ -45,8 +48,10 @@ const receiveReading = async (req, res) => {
     await models.Station_Readings.create(
       data
     )
+    logger.info('receiveReading ' + 201 + " " + station.name);
     return res.status(201).json({ message: "Datos ingresados correctamente" });
   } catch (e) {
+    logger.error('receiveReading ' + 503);
     return res.status(503).json({ message: "Hubo un error" });
   }
 }

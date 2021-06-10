@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt")
 const saltRounds = 10;
 const models = require('../models');
 const { Op } = require("sequelize");
+const logger = require("../../logger")
 
 const getAdmins = async (req, res) => {
     const admins = await models.Admin.findAll({
@@ -16,6 +17,7 @@ const getAdmins = async (req, res) => {
         },
     }
     );
+    logger.info('getAdmins ' + 200);
     return res.status(200).json({ admins })
 };
 
@@ -34,6 +36,7 @@ const getAdmin = async (req, res) => {
     if (!admin) {
         return res.status(404).json({ message: "Administrador no encontrado" })
     }
+    logger.info('getAdmin ' + 200);
     return res.status(200).json({ admin })
 }
 
@@ -66,6 +69,7 @@ const newAdmin = async (req, res) => {
         email,
         city_id,
     })
+    logger.info('newAdmin ' + 201);
     return res.status(201).json({ admin })
 }
 
@@ -92,6 +96,7 @@ const editAdmin = async (req, res) => {
     admin.city_id = city_id ? city_id : admin.city_id
 
     await admin.save();
+    logger.info('editAdmin ' + 200);
     return res.status(200).json({ admin })
 }
 
@@ -108,6 +113,7 @@ const deleteAdmin = async (req, res) => {
         return res.status(404).json({ message: "Administrador no encontrado" })
     }
     await admin.destroy();
+    logger.info('deleteAdmin ' + 200);
     return res.status(200).json({ message: "Administrador eliminado correctamente" })
 }
 
