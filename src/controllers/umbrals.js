@@ -30,14 +30,17 @@ const getPollutantUmbrals = async (req, res) => {
 }
 
 const newPollutantUmbrals = async (req, res) => {
-    const { pollutant, good, moderate, unhealthy, very_unhealthy, dangerous } = req.body
+    const pollutant = req.body.pollutant || null
+    const good = req.body.good || null
+    const moderate = req.body.moderate || null
+    const unhealthy = req.body.unhealthy || null
+    const very_unhealthy = req.body.very_unhealthy || null
+    const dangerous = req.body.dangerous || null
 
     if (!pollutant) {
         return res.status(400).json({ message: "Debe elegir un contaminante" })
     }
-    if (!good || !moderate || !unhealthy || !very_unhealthy || !dangerous) {
-        return res.status(400).json({ message: "Debe llenar los campos que indican los rangos de umbrales" })
-    }
+
     let pollutantUmbrals = await models.Umbrals.findOne({
         where: {
             pollutant
@@ -49,16 +52,30 @@ const newPollutantUmbrals = async (req, res) => {
     if (pollutantUmbrals) {
         return res.status(400).json({ message: `Ya existe una definición de umbrales para el contaminante ${pollutantUmbrals.Pollutant.name}` })
     }
+
+    let form = {
+        good, moderate, unhealthy, very_unhealthy, dangerous
+    }
+
+    if (validateUmbrals(form, ['good', 'moderate', 'unhealthy', 'very_unhealthy', 'dangerous'])) {
+        return res.status(400).json({ message: "Los umbrales ingresados son inválidos" })
+    }
+
     pollutantUmbrals = await models.Umbrals.create({
         pollutant, good, moderate, unhealthy, very_unhealthy, dangerous
     })
+
     logger.info('newPollutantUmbrals ' + 200);
     return res.status(201).json({ pollutantUmbrals })
 }
 
 const editPollutantUmbrals = async (req, res) => {
     const id = req.params.id
-    const { good, moderate, unhealthy, very_unhealthy, dangerous } = req.body
+    const good = req.body.good || null
+    const moderate = req.body.moderate || null
+    const unhealthy = req.body.unhealthy || null
+    const very_unhealthy = req.body.very_unhealthy || null
+    const dangerous = req.body.dangerous || null
 
     if (!id) {
         return res.status(400).json({ message: "Debe ingresar un id" })
@@ -69,6 +86,14 @@ const editPollutantUmbrals = async (req, res) => {
 
     if (!pollutantUmbrals) {
         return res.status(404).json({ message: "Umbrales de contaminante no encontrados" })
+    }
+
+    let form = {
+        good, moderate, unhealthy, very_unhealthy, dangerous
+    }
+
+    if (validateUmbrals(form, ['good', 'moderate', 'unhealthy', 'very_unhealthy', 'dangerous'])) {
+        return res.status(400).json({ message: "Los umbrales ingresados son inválidos" })
     }
 
     pollutantUmbrals.good = good ? good : pollutantUmbrals.good
@@ -98,6 +123,23 @@ const deletePollutantUmbrals = async (req, res) => {
 
     logger.info('deletePollutantUmbrals ' + 200);
     return res.status(200).json({ message: `Umbrales de contaminante ${pollutantUmbrals.pollutant} eliminados correctamente` })
+}
+
+const validateUmbrals = (form, umbrals) => {
+    let isValid = true;
+    let umbralValue = 0
+    umbrals.forEach(umbral => {
+        console.log(umbral)
+        if (form[umbral]) {
+            if (umbralValue < form[umbral]) {
+                umbralValue = form[umbral]
+            }
+            else {
+                isValid = false;
+            }
+        }
+    })
+    return isValid
 }
 
 module.exports = {
