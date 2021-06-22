@@ -91,6 +91,9 @@ const lastHourStatusByStation = async ({ stationId, pollutants }) => {
   const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
 
   const pollutantsNames = pollutants.map(pollutant => pollutant.name)
+  pollutantsNames.push('TEMP')
+  pollutantsNames.push('PRESS')
+  pollutantsNames.push('HR')
   let averages = ''
   if (pollutantsNames.length > 0) {
     averages += ', '
@@ -145,6 +148,9 @@ const last24HoursStatusByStation = async (req, res) => {
   const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
 
   const pollutantsNames = pollutants.map(pollutant => pollutant.name)
+  pollutantsNames.push('TEMP')
+  pollutantsNames.push('PRESS')
+  pollutantsNames.push('HR')
   let averages = ''
   if (pollutantsNames.length > 0) {
     averages += ', '
@@ -204,6 +210,9 @@ const lastMonthStatusByStation = async (req, res) => {
   const currentDate = moment().format("YYYY-MM-DD");
 
   const pollutantsNames = pollutants.map(pollutant => pollutant.name)
+  pollutantsNames.push('TEMP')
+  pollutantsNames.push('PRESS')
+  pollutantsNames.push('HR')
   let averages = ''
   if (pollutantsNames.length > 0) {
     averages += ', '
