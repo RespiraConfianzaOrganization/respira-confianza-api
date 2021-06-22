@@ -18,7 +18,6 @@ const searchStations = async (req, res) => {
 const stationStatus = async (req, res) => {
   const { id } = req.params
   let pollutants = [];
-  let readings = [];
 
   if (!id) {
     return res.status(400).json({ message: 'Debe ingresar un id' });
@@ -42,13 +41,13 @@ const stationStatus = async (req, res) => {
   });
 
   if (!station) {
-    return res.status(400).json({ message: 'Estación no encontrada' });
+    return res.status(404).json({ message: 'Estación no encontrada' });
   }
 
   pollutants = station.Pollutants
 
   const readingsLastHour = await lastHourStatusByStation({ stationId: id, pollutants })
-  return res.status(200).json({ station, pollutants, readingsLastHour, graphReadings: readings });
+  return res.status(200).json({ station, pollutants, readingsLastHour });
 }
 
 const stationStatusByPollutant = async (req, res) => {
@@ -139,7 +138,7 @@ const last24HoursStatusByStation = async (req, res) => {
   });
 
   if (!station) {
-    return res.status(400).json({ message: 'Estación no encontrada' });
+    return res.status(404).json({ message: 'Estación no encontrada' });
   }
 
   pollutants = station.Pollutants
@@ -201,7 +200,7 @@ const lastMonthStatusByStation = async (req, res) => {
   });
 
   if (!station) {
-    return res.status(400).json({ message: 'Estación no encontrada' });
+    return res.status(404).json({ message: 'Estación no encontrada' });
   }
 
   pollutants = station.Pollutants
