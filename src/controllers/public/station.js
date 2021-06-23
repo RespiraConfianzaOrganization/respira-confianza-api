@@ -1,6 +1,7 @@
 const models = require("../../models");
 const sequelize = require('sequelize');
 const moment = require("moment");
+const { UUID } = require("sequelize");
 
 const searchStations = async (req, res) => {
   const { city_id } = req.query;
@@ -46,7 +47,7 @@ const stationStatus = async (req, res) => {
 
   pollutants = station.Pollutants
 
-  const readingsLastHour = await lastHourStatusByStation({ stationId: id, pollutants })
+  const readingsLastHour = await lastHourStatusByStation({ stationIds: [id], pollutants })
   return res.status(200).json({ station, pollutants, readingsLastHour });
 }
 
@@ -56,6 +57,12 @@ const stationStatusByPollutant = async (req, res) => {
   if (!pollutant) {
     return res.status(400).json({ message: 'Debe ingresar un contaminante' });
   }
+  const pollutantObj = await models.Pollutant.findOne({
+    attributes: { exclude: ['created_at', 'updated_at'] },
+    where: {
+      name: pollutant
+    }
+  })
 
   const stations = await models.Station.findAll({
     attributes: ["id", "name", "latitude", "longitude"],
@@ -78,13 +85,13 @@ const stationStatusByPollutant = async (req, res) => {
       pollutant
     }
   })
+  const stationIds = stations.map(station => station.id)
+  const readingsLastHour = await lastHourStatusByStation({ stationIds: stationIds, pollutants: [pollutantObj] })
 
-  const readings = [];
-
-  return res.status(200).json({ stations, umbrals, readings });
+  return res.status(200).json({ stations, umbrals, readingsLastHour });
 }
 
-const lastHourStatusByStation = async ({ stationId, pollutants }) => {
+const lastHourStatusByStation = async ({ stationIds, pollutants }) => {
   //LAST 24 HOURS READINGS 
   const oneHourBeforeDate = moment().subtract(1, "hour").format("YYYY-MM-DD HH:mm:ss");
   const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
@@ -94,24 +101,31 @@ const lastHourStatusByStation = async ({ stationId, pollutants }) => {
   pollutantsNames.push('PRESS')
   pollutantsNames.push('HR')
   let averages = ''
+
   if (pollutantsNames.length > 0) {
     averages += ', '
     averages += pollutantsNames.map(pollutant => `TRUNC(AVG("${pollutant}")) as "AVG${pollutant}"`).join(", ")
   }
 
+  const ids = stationIds.map(id => "'" + id + "'").join(',')
   const rawQuery = `
-    SELECT "station_id", max(to_char(date_trunc('hour', recorded_at),'HH24:00')) as hour ${averages}
-    FROM ( 
-      SELECT *
-      FROM "Station_Readings"
-      WHERE (station_id= :stationId AND recorded_at between :oneHourBeforeDate and :currentDate)) AS RECORDS
-    GROUP BY station_id`
+    SELECT *
+    FROM (
+      SELECT id from "Stations" WHERE (id = ANY(ARRAY[${ids}]::uuid[]))) as Stations
+    LEFT JOIN (
+        SELECT "station_id", max(to_char(date_trunc('hour', recorded_at),'HH24:00')) as hour ${averages}
+        FROM ( 
+          SELECT *
+          FROM "Station_Readings"
+          WHERE (station_id = ANY(ARRAY[${ids}]::uuid[]) AND recorded_at between :oneHourBeforeDate and :currentDate)) AS RECORDS
+        GROUP BY station_id) AS GROUPED
+    on GROUPED.station_id= Stations.id;`
 
   const readings = await models.sequelize.query(rawQuery, {
     raw: true,
     type: sequelize.QueryTypes.SELECT,
     replacements: {
-      stationId, currentDate, oneHourBeforeDate
+      currentDate, oneHourBeforeDate
     }
   })
 
