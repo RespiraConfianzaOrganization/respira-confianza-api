@@ -1,7 +1,6 @@
 const models = require("../../models");
 const sequelize = require('sequelize');
 const moment = require("moment");
-const { UUID } = require("sequelize");
 
 const searchStations = async (req, res) => {
   const { city_id } = req.query;
@@ -32,7 +31,10 @@ const stationStatus = async (req, res) => {
     include: [
       {
         model: models.Pollutant,
-        attributes: ['name', 'unit', 'extendedName']
+        attributes: ['name', 'unit', 'extendedName'],
+        through: {
+          attributes: []
+        }
       },
       {
         model: models.City,
@@ -71,6 +73,9 @@ const stationStatusByPollutant = async (req, res) => {
         model: models.Pollutant,
         attributes: ['name', 'unit'],
         where: { name: pollutant },
+        through: {
+          attributes: []
+        }
       },
       {
         model: models.City,
