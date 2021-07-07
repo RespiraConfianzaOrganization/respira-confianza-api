@@ -34,6 +34,10 @@ const stationStatus = async (req, res) => {
         attributes: ['name', 'unit', 'extendedName'],
         through: {
           attributes: []
+        },
+        include:{
+          model:models.Umbrals,
+          attributes: { exclude: ['id', 'created_at','updated_at'] },
         }
       },
       {
@@ -50,7 +54,7 @@ const stationStatus = async (req, res) => {
   pollutants = station.Pollutants
 
   const readingsLastHour = await lastHourStatusByStation({ stationIds: [id], pollutants })
-  return res.status(200).json({ station, pollutants, readingsLastHour });
+  return res.status(200).json({ station, readingsLastHour });
 }
 
 const stationStatusByPollutant = async (req, res) => {
@@ -152,7 +156,14 @@ const last24HoursStatusByStation = async (req, res) => {
     },
     include: {
       model: models.Pollutant,
-      attributes: ['name', 'unit']
+      attributes: ['name', 'unit'],
+      through: {
+        attributes: []
+      },
+      include:{
+        model:models.Umbrals,
+        attributes: { exclude: ['id', 'created_at','updated_at'] },
+      }
     }
   });
 
@@ -196,7 +207,7 @@ const last24HoursStatusByStation = async (req, res) => {
     }
   })
 
-  return res.status(200).json({ readings });
+  return res.status(200).json({ readings, pollutants: station.Pollutants });
 }
 
 const lastMonthStatusByStation = async (req, res) => {
@@ -214,7 +225,14 @@ const lastMonthStatusByStation = async (req, res) => {
     },
     include: {
       model: models.Pollutant,
-      attributes: ['name', 'unit']
+      attributes: ['name', 'unit'],
+      through: {
+        attributes: []
+      },
+      include:{
+        model:models.Umbrals,
+        attributes: { exclude: ['id', 'created_at','updated_at'] },
+      }
     }
   });
 
@@ -258,7 +276,7 @@ const lastMonthStatusByStation = async (req, res) => {
     }
   })
 
-  return res.status(200).json({ readings });
+  return res.status(200).json({ readings, pollutants: station.Pollutants });
 }
 
 module.exports = {
