@@ -24,7 +24,6 @@ const stationStatus = async (req, res) => {
   }
 
   const station = await models.Station.findOne({
-    attributes: { exclude: ['private_key', 'created_at', 'updated_at'] },
     where: {
       id,
     },
@@ -40,10 +39,6 @@ const stationStatus = async (req, res) => {
           attributes: { exclude: ['id', 'created_at','updated_at'] },
         }
       },
-      {
-        model: models.City,
-        attributes: ['name']
-      }
     ]
   });
 
@@ -54,7 +49,7 @@ const stationStatus = async (req, res) => {
   pollutants = station.Pollutants
 
   const readingsLastHour = await lastHourStatusByStation({ stationIds: [id], pollutants })
-  return res.status(200).json({ station, readingsLastHour });
+  return res.status(200).json({ station:readingsLastHour[0] });
 }
 
 const stationStatusByPollutant = async (req, res) => {
@@ -63,31 +58,28 @@ const stationStatusByPollutant = async (req, res) => {
   if (!pollutant) {
     return res.status(400).json({ message: 'Debe ingresar un contaminante' });
   }
+  // Find the pollutant
   const pollutantObj = await models.Pollutant.findOne({
-    attributes: { exclude: ['created_at', 'updated_at'] },
+    attributes: ['name'],
     where: {
       name: pollutant
     }
   })
-
+  // Find the stations that measure the pollutant
   const stations = await models.Station.findAll({
-    attributes: ["id", "name", "latitude", "longitude"],
+    attributes: ["id"],
     include: [
       {
         model: models.Pollutant,
-        attributes: ['name', 'unit'],
+        attributes: [],
         where: { name: pollutant },
         through: {
           attributes: []
         }
       },
-      {
-        model: models.City,
-        attributes: ['name'],
-      }
     ]
   });
-
+  // Find umbrals of the pollutant 
   const umbrals = await models.Umbrals.findOne({
     attributes: { exclude: ['created_at', 'updated_at'] },
     where: {
@@ -95,9 +87,9 @@ const stationStatusByPollutant = async (req, res) => {
     }
   })
   const stationIds = stations.map(station => station.id)
-  const readingsLastHour = await lastHourStatusByStation({ stationIds: stationIds, pollutants: [pollutantObj] })
+  const readingsLastHourByStation = await lastHourStatusByStation({ stationIds: stationIds, pollutants: [pollutantObj] })
 
-  return res.status(200).json({ stations, umbrals, readingsLastHour });
+  return res.status(200).json({ stations:readingsLastHourByStation, umbrals });
 }
 
 const lastHourStatusByStation = async ({ stationIds, pollutants }) => {
@@ -118,17 +110,27 @@ const lastHourStatusByStation = async ({ stationIds, pollutants }) => {
 
   const ids = stationIds.map(id => "'" + id + "'").join(',')
   const rawQuery = `
+  SELECT * FROM (
     SELECT *
     FROM (
-      SELECT id from "Stations" WHERE (id = ANY(ARRAY[${ids}]::uuid[]))) as Stations
+      SELECT id, name, latitude, longitude, city_id from "Stations" WHERE (id = ANY(ARRAY[${ids}]::uuid[]))
+    ) as Stations
     LEFT JOIN (
         SELECT "station_id", max(to_char(date_trunc('hour', recorded_at),'HH24:00')) as hour ${averages}
         FROM ( 
           SELECT *
           FROM "Station_Readings"
-          WHERE (station_id = ANY(ARRAY[${ids}]::uuid[]) AND recorded_at between :oneHourBeforeDate and :currentDate)) AS RECORDS
-        GROUP BY station_id) AS GROUPED
-    on GROUPED.station_id= Stations.id;`
+          WHERE (station_id = ANY(ARRAY[${ids}]::uuid[]) AND recorded_at between :oneHourBeforeDate and :currentDate)
+        ) AS RECORDS
+        GROUP BY station_id
+    ) AS GROUPED
+    on GROUPED.station_id= Stations.id
+  ) AS STATIONREADINGS
+  LEFT JOIN (
+    SELECT id AS idCity, name as nameCity
+    FROM "Cities"
+  ) AS allCities
+  on STATIONREADINGS.city_id= allCities.idCity;`
 
   const readings = await models.sequelize.query(rawQuery, {
     raw: true,
