@@ -89,7 +89,7 @@ const stationStatusByPollutant = async (req, res) => {
   const stationIds = stations.map(station => station.id)
   const readingsLastHourByStation = await lastHourStatusByStation({ stationIds: stationIds, pollutants: [pollutantObj] })
 
-  return res.status(200).json({ stations:readingsLastHourByStation, umbrals });
+  return res.status(200).json({ stations:readingsLastHourByStation, umbrals, pollutant: pollutantObj});
 }
 
 const lastHourStatusByStation = async ({ stationIds, pollutants }) => {
