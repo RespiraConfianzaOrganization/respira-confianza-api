@@ -60,11 +60,18 @@ const stationStatusByPollutant = async (req, res) => {
   }
   // Find the pollutant
   const pollutantObj = await models.Pollutant.findOne({
-    attributes: ['name'],
+    attributes: ['name','unit'],
     where: {
       name: pollutant
+    }, 
+    include:{ 
+      model: models.Umbrals,
+      attributes: { exclude: ['created_at', 'updated_at'] },
     }
   })
+  if(!pollutantObj){
+    return res.status(404).json({ message: 'Contaminante no encontrado' });
+  }
   // Find the stations that measure the pollutant
   const stations = await models.Station.findAll({
     attributes: ["id"],
@@ -79,13 +86,7 @@ const stationStatusByPollutant = async (req, res) => {
       },
     ]
   });
-  // Find umbrals of the pollutant 
-  const umbrals = await models.Umbrals.findOne({
-    attributes: { exclude: ['created_at', 'updated_at'] },
-    where: {
-      pollutant
-    }
-  })
+  const umbrals= pollutantObj.Umbral
   const stationIds = stations.map(station => station.id)
   const readingsLastHourByStation = await lastHourStatusByStation({ stationIds: stationIds, pollutants: [pollutantObj] })
 
