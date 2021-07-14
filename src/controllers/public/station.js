@@ -49,7 +49,7 @@ const stationStatus = async (req, res) => {
   pollutants = station.Pollutants
 
   const readingsLastHour = await lastHourStatusByStation({ stationIds: [id], pollutants })
-  return res.status(200).json({ station:readingsLastHour[0] });
+  return res.status(200).json({ station:readingsLastHour[0], pollutants });
 }
 
 const stationStatusByPollutant = async (req, res) => {
