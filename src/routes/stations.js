@@ -5,6 +5,11 @@ const publicStationController = require("../controllers/public/station")
 const addRoutes = (router) => {
   // Public 
   router.get(
+    "/stations/recommend",
+    publicStationController.recommendedStations
+  );
+
+  router.get(
     "/stations/:id/status",
     publicStationController.stationStatus
   );
@@ -29,12 +34,11 @@ const addRoutes = (router) => {
     publicStationController.stationStatusByPollutant,
   );
 
+  //Private 
   router.get(
     "/public/stations",
     stationController.getStationsPublic
   );
-
-  //Private 
 
   router.get(
     "/stations",
@@ -47,16 +51,19 @@ const addRoutes = (router) => {
     authController.isAuthenticated,
     stationController.getStation
   );
+
   router.post(
     "/stations/new",
     authController.isAuthenticated,
     stationController.newStation
   );
+
   router.put(
     "/stations/:id",
     authController.isAuthenticated,
     stationController.editStation
   );
+
   router.delete(
     "/stations/:id",
     authController.isAuthenticated,

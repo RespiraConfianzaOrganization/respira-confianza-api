@@ -34,9 +34,9 @@ const stationStatus = async (req, res) => {
         through: {
           attributes: []
         },
-        include:{
-          model:models.Umbrals,
-          attributes: { exclude: ['id', 'created_at','updated_at'] },
+        include: {
+          model: models.Umbrals,
+          attributes: { exclude: ['id', 'created_at', 'updated_at'] },
         }
       },
     ]
@@ -49,7 +49,7 @@ const stationStatus = async (req, res) => {
   pollutants = station.Pollutants
 
   const readingsLastHour = await lastHourStatusByStation({ stationIds: [id], pollutants })
-  return res.status(200).json({ station:readingsLastHour[0], pollutants });
+  return res.status(200).json({ station: readingsLastHour[0], pollutants });
 }
 
 const stationStatusByPollutant = async (req, res) => {
@@ -60,16 +60,16 @@ const stationStatusByPollutant = async (req, res) => {
   }
   // Find the pollutant
   const pollutantObj = await models.Pollutant.findOne({
-    attributes: ['name','unit'],
+    attributes: ['name', 'unit'],
     where: {
       name: pollutant
-    }, 
-    include:{ 
+    },
+    include: {
       model: models.Umbrals,
       attributes: { exclude: ['created_at', 'updated_at'] },
     }
   })
-  if(!pollutantObj){
+  if (!pollutantObj) {
     return res.status(404).json({ message: 'Contaminante no encontrado' });
   }
   // Find the stations that measure the pollutant
@@ -86,11 +86,11 @@ const stationStatusByPollutant = async (req, res) => {
       },
     ]
   });
-  const umbrals= pollutantObj.Umbral
+  const umbrals = pollutantObj.Umbral
   const stationIds = stations.map(station => station.id)
   const readingsLastHourByStation = await lastHourStatusByStation({ stationIds: stationIds, pollutants: [pollutantObj] })
 
-  return res.status(200).json({ stations:readingsLastHourByStation, umbrals, pollutant: pollutantObj});
+  return res.status(200).json({ stations: readingsLastHourByStation, umbrals, pollutant: pollutantObj });
 }
 
 const lastHourStatusByStation = async ({ stationIds, pollutants }) => {
@@ -163,9 +163,9 @@ const last24HoursStatusByStation = async (req, res) => {
       through: {
         attributes: []
       },
-      include:{
-        model:models.Umbrals,
-        attributes: { exclude: ['id', 'created_at','updated_at'] },
+      include: {
+        model: models.Umbrals,
+        attributes: { exclude: ['id', 'created_at', 'updated_at'] },
       }
     }
   });
@@ -232,9 +232,9 @@ const lastMonthStatusByStation = async (req, res) => {
       through: {
         attributes: []
       },
-      include:{
-        model:models.Umbrals,
-        attributes: { exclude: ['id', 'created_at','updated_at'] },
+      include: {
+        model: models.Umbrals,
+        attributes: { exclude: ['id', 'created_at', 'updated_at'] },
       }
     }
   });
@@ -282,10 +282,28 @@ const lastMonthStatusByStation = async (req, res) => {
   return res.status(200).json({ readings, pollutants: station.Pollutants });
 }
 
+const recommendedStations = async (req, res) => {
+  const { latitude, longitude } = req.query;
+
+  if (!latitude || !longitude) {
+    return res.status(400).json({ message: 'No se enviaron coordenadas' });
+  }
+
+  let stations = await models.Station.findAll({
+    attributes: ['id', [sequelize.literal("6371 * acos(cos(radians(" + latitude + ")) * cos(radians(latitude)) * cos(radians(" + longitude + ") - radians(longitude)) + sin(radians(" + latitude + ")) * sin(radians(latitude)))"), 'distance']],
+    order: sequelize.col('distance'),
+    limit: 3,
+  });
+
+  stations = stations.map(station => station.id)
+  return res.status(200).json({ stations });
+}
+
 module.exports = {
   searchStations,
   stationStatus,
   stationStatusByPollutant,
   last24HoursStatusByStation,
-  lastMonthStatusByStation
+  lastMonthStatusByStation,
+  recommendedStations
 }
