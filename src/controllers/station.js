@@ -107,6 +107,7 @@ const newStation = async (req, res) => {
     longitude,
     status,
   });
+
   logger.info('newStation ' + 201);
   return res.status(201).json({ station });
 };

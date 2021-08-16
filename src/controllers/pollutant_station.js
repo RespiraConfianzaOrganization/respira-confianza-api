@@ -40,6 +40,7 @@ const newPollutantStation = async (req, res) => {
   }
 
   const pollutantStation = await models.Pollutant_Station.create({
+    id: 20,
     pollutant,
     station_id,
     useAuxiliar

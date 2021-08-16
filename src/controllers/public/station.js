@@ -4,14 +4,22 @@ const moment = require("moment");
 
 const searchStations = async (req, res) => {
   const { city_id } = req.query;
+
+  if (!city_id) {
+    return res.status(400).json();
+  }
+
   const stations = await models.Station.findAll({
     where: {
       city_id,
+      status: 'Habilitada'
     }
   });
+
   const city = await models.City.findOne({
     where: { id: city_id }
   })
+
   return res.status(200).json({ stations, city });
 }
 

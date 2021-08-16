@@ -14,7 +14,13 @@ const login = async (req, res) => {
     }
 
     const admin = await models.Admin.findOne({
-        where: { username }
+        where: { username },
+        include: {
+            model: models.City,
+            include: {
+                model: models.Country
+            }
+        },
     })
 
     if (!admin) {
