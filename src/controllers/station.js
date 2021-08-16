@@ -174,12 +174,23 @@ const deleteStation = async (req, res) => {
   if (!id) {
     return res.status(400).json({ message: "Debe ingresar un id" });
   }
+
   const station = await models.Station.findOne({
     where: { id },
+    include: {
+      model: models.Station_Readings,
+      limit: 1
+    }
   });
+
   if (!station) {
     return res.status(404).json({ message: "Estación no encontrada" });
   }
+
+  if (station.Station_Readings.length > 0) {
+    return res.status(400).json({ message: "Esta estación no se puede eliminar, debido a que tiene lecturas asociadas. Si se desea borrar tendrá que contactar al SUPERADMIN." });
+  }
+
   await station.destroy();
   logger.info('deleteStation ' + 200);
   return res.status(200).json({ message: "Estación eliminada correctamente" });
