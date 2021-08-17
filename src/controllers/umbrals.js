@@ -31,7 +31,7 @@ const getPollutantUmbrals = async (req, res) => {
 
 const newPollutantUmbrals = async (req, res) => {
     const pollutant = req.body.pollutant || null
-    const good = req.body.good || null
+    const good = req.body.good
     const moderate = req.body.moderate || null
     const unhealthy = req.body.unhealthy || null
     const very_unhealthy = req.body.very_unhealthy || null
@@ -57,7 +57,7 @@ const newPollutantUmbrals = async (req, res) => {
         good, moderate, unhealthy, very_unhealthy, dangerous
     }
 
-    if (validateUmbrals(form, ['good', 'moderate', 'unhealthy', 'very_unhealthy', 'dangerous'])) {
+    if (!validateUmbrals(form, ['good', 'moderate', 'unhealthy', 'very_unhealthy', 'dangerous'])) {
         return res.status(400).json({ message: "Los umbrales ingresados son inválidos" })
     }
 
@@ -71,7 +71,7 @@ const newPollutantUmbrals = async (req, res) => {
 
 const editPollutantUmbrals = async (req, res) => {
     const id = req.params.id
-    const good = req.body.good || null
+    const good = req.body.good
     const moderate = req.body.moderate || null
     const unhealthy = req.body.unhealthy || null
     const very_unhealthy = req.body.very_unhealthy || null
@@ -92,7 +92,7 @@ const editPollutantUmbrals = async (req, res) => {
         good, moderate, unhealthy, very_unhealthy, dangerous
     }
 
-    if (validateUmbrals(form, ['good', 'moderate', 'unhealthy', 'very_unhealthy', 'dangerous'])) {
+    if (!validateUmbrals(form, ['good', 'moderate', 'unhealthy', 'very_unhealthy', 'dangerous'])) {
         return res.status(400).json({ message: "Los umbrales ingresados son inválidos" })
     }
 
@@ -126,20 +126,18 @@ const deletePollutantUmbrals = async (req, res) => {
 }
 
 const validateUmbrals = (form, umbrals) => {
-    let isValid = true;
-    let umbralValue = 0
-    umbrals.forEach(umbral => {
-        console.log(umbral)
+    let umbralValue = -1
+    for (const umbral of umbrals) {
         if (form[umbral]) {
             if (umbralValue < form[umbral]) {
                 umbralValue = form[umbral]
             }
             else {
-                isValid = false;
+                return false;
             }
         }
-    })
-    return isValid
+    }
+    return true;
 }
 
 module.exports = {
