@@ -103,8 +103,8 @@ const stationStatusByPollutant = async (req, res) => {
 
 const lastHourStatusByStation = async ({ stationIds, pollutants }) => {
   //LAST 24 HOURS READINGS 
-  const oneHourBeforeDate = moment().subtract(1, "hour").format("YYYY-MM-DD HH:mm:ss");
-  const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
+  const oneHourBeforeDate = moment().utc().subtract(1, "hour").format("YYYY-MM-DD HH:mm:ss");
+  const currentDate = moment().utc().format("YYYY-MM-DD HH:mm:ss");
 
   const pollutantsNames = pollutants.map(pollutant => pollutant.name)
   pollutantsNames.push('TEMP')
@@ -184,8 +184,8 @@ const last24HoursStatusByStation = async (req, res) => {
 
   pollutants = station.Pollutants
   //LAST 24 HOURS READINGS 
-  const yesterdayDate = moment().subtract(1, "days").format("YYYY-MM-DD HH:mm:ss");
-  const currentDate = moment().format("YYYY-MM-DD HH:mm:ss");
+  const yesterdayDate = moment().utc().subtract(1, "days").format("YYYY-MM-DD HH:mm:ss");
+  const currentDate = moment().utc().format("YYYY-MM-DD HH:mm:ss");
 
   const pollutantsNames = pollutants.map(pollutant => pollutant.name)
   pollutantsNames.push('TEMP')
@@ -253,8 +253,8 @@ const lastMonthStatusByStation = async (req, res) => {
 
   pollutants = station.Pollutants
   //LAST 24 HOURS READINGS 
-  const lastMonthDate = moment().subtract(1, 'months').format("YYYY-MM-DD");
-  const currentDate = moment().format("YYYY-MM-DD");
+  const lastMonthDate = moment().utc().subtract(1, 'months').format("YYYY-MM-DD");
+  const currentDate = moment().utc().format("YYYY-MM-DD");
 
   const pollutantsNames = pollutants.map(pollutant => pollutant.name)
   pollutantsNames.push('TEMP')
