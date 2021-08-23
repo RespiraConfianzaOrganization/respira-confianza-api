@@ -300,6 +300,9 @@ const recommendedStations = async (req, res) => {
   let stations = await models.Station.findAll({
     attributes: ['id', [sequelize.literal("6371 * acos(cos(radians(" + latitude + ")) * cos(radians(latitude)) * cos(radians(" + longitude + ") - radians(longitude)) + sin(radians(" + latitude + ")) * sin(radians(latitude)))"), 'distance']],
     order: sequelize.col('distance'),
+    where: {
+      status: 'Habilitada'
+    }
   });
 
   stations = stations.map(station => station.id)
