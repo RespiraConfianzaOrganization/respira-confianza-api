@@ -24,7 +24,12 @@ const pollutantsReadingsByStations = async (req, res) => {
         attributes: attributes
     });
 
-    return res.status(200).json({ readings: stationsObjects});
+    const groupedByStation = {}
+    stations.forEach(station => {
+        groupedByStation[station] = stationsObjects.filter(({station_id}) => station_id === station)
+    })
+
+    return res.status(200).json({ readings: groupedByStation});
 }
 
 
