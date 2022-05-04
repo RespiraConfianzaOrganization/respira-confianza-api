@@ -32,6 +32,7 @@ const makeQuery = (startDate, endDate, stations, fields) => {
 const pollutantsReadingsByStations = async (req, res) => {
 
     const { pollutants, stations, startDate, endDate } = req.body;
+    console.log(pollutants, stations, startDate, endDate)
     const pollutantsAttributes = pollutants || []
     const attributes = ["id", "station_id", "recorded_at", ...pollutantsAttributes]
 
@@ -55,10 +56,14 @@ const pollutantsReadingsByStations = async (req, res) => {
 
     const groupedByStation = {}
     stations.forEach(station => {
-        groupedByStation[station] = stationsObjects.filter(({station_id}) => station_id.toLowerCase() === station.toLowerCase())
+        groupedByStation[station] = stationsObjects.filter(({station_id}) => {
+            const actual = station.toLowerCase()
+            const expected = station_id.toLowerCase()
+            return actual === expected
+        })
     })
 
-    return res.status(200).json({ readings: groupedByStation});
+    return res.status(200).json({ readings: groupedByStation });
 }
 
 
