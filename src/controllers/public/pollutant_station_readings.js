@@ -1,6 +1,17 @@
 const models = require("../../models");
-const { Op } = require('sequelize');
 const sequelize = require("sequelize");
+
+const groupByStations = ({ stationsList, stationsModelList }) => {
+    const groupedByStation = {}
+    stationsList.forEach(station => {
+        groupedByStation[station] = stationsModelList.filter(({station_id}) => {
+            const actual = station.toLowerCase()
+            const expected = station_id.toLowerCase()
+            return actual === expected
+        })
+    })
+    return groupedByStation
+}
 
 const makeQuery = (startDate, endDate, stations, fields) => {
     const stringFields = fields.map(f => `AVG("${f}") AS ${f}`)
@@ -32,35 +43,17 @@ const makeQuery = (startDate, endDate, stations, fields) => {
 const pollutantsReadingsByStations = async (req, res) => {
 
     const { pollutants, stations, startDate, endDate } = req.body;
-    console.log(pollutants, stations, startDate, endDate)
-    const pollutantsAttributes = pollutants || []
-    const attributes = ["id", "station_id", "recorded_at", ...pollutantsAttributes]
 
     const query = makeQuery(startDate, endDate, stations, pollutants)
-    const queryToExecute = query
-    // const stationsObjects = await models.Station_Readings.findAll({
-    //     where: {
-    //         station_id: stations,
-    //         recorded_at: {
-    //             [Op.between]: [startDate, endDate],
-    //         }
-    //     },
-    //     attributes: attributes
-    // });
 
-    const stationsObjects = await models.sequelize.query(queryToExecute, {
+    const stationsObjects = await models.sequelize.query(query, {
         raw: true,
         type: sequelize.QueryTypes.SELECT,
     });
 
-
-    const groupedByStation = {}
-    stations.forEach(station => {
-        groupedByStation[station] = stationsObjects.filter(({station_id}) => {
-            const actual = station.toLowerCase()
-            const expected = station_id.toLowerCase()
-            return actual === expected
-        })
+    const groupedByStation = groupByStations({
+        stationsList: stations,
+        stationsModelList: stationsObjects
     })
 
     return res.status(200).json({ readings: groupedByStation });
