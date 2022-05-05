@@ -1,5 +1,6 @@
 const models = require("../../models");
 const sequelize = require("sequelize");
+const { Op } = require('sequelize');
 
 const groupByStations = ({ stationsList, stationsModelList }) => {
     const groupedByStation = {}
@@ -13,11 +14,11 @@ const groupByStations = ({ stationsList, stationsModelList }) => {
     return groupedByStation
 }
 
-const makeQuery = (startDate, endDate, stations, fields) => {
+const getObjectsGroupedByTime = async (startDate, endDate, stations, fields) => {
     const stringFields = fields.map(f => `AVG("${f}") AS ${f}`)
     const joinedFields = stringFields.join(',')
     const tupleStations = `(${stations.map(s => `'${s}'`).toString()})`
-    const query = `
+    const rawQuery =  `
     SELECT station_id,
            make_timestamp(CAST(DATE_PART('year', recorded_at) as integer),
                           CAST(DATE_PART('month', recorded_at) as integer),
@@ -37,19 +38,38 @@ const makeQuery = (startDate, endDate, stations, fields) => {
              DATE_PART('month', recorded_at)
     `
 
-    return query
+    return await models.sequelize.query(rawQuery, {
+        raw: true,
+        type: sequelize.QueryTypes.SELECT,
+    })
+}
+
+const getObjects = async (startDate, endDate, stations, pollutants) => {
+    const attributes = ["id", "station_id", "recorded_at", ...pollutants]
+    return await models.Station_Readings.findAll({
+        where: {
+            station_id: stations,
+            recorded_at: {
+                [Op.between]: [startDate, endDate],
+            }
+        },
+        attributes: attributes
+    });
 }
 
 const pollutantsReadingsByStations = async (req, res) => {
 
-    const { pollutants, stations, startDate, endDate } = req.body;
+    let { pollutants, stations, startDate, endDate, groupByTime } = req.body;
 
-    const query = makeQuery(startDate, endDate, stations, pollutants)
+    let stationsObjects
 
-    const stationsObjects = await models.sequelize.query(query, {
-        raw: true,
-        type: sequelize.QueryTypes.SELECT,
-    });
+    console.table({groupByTime})
+
+    if (!groupByTime) {
+        stationsObjects = await getObjects(startDate, endDate, stations, pollutants)
+    } else {
+        stationsObjects = await getObjectsGroupedByTime(startDate, endDate, stations, pollutants)
+    }
 
     const groupedByStation = groupByStations({
         stationsList: stations,
