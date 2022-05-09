@@ -1,17 +1,17 @@
-var fs = require('fs');
-var http = require('http');
-var https = require('https');
-var certificate = fs.readFileSync('config/certs/selfsigned.crt', 'utf8');
-var privateKey = fs.readFileSync('config/certs/selfsigned.key', 'utf8');
-var ca = fs.readFileSync('config/certs/selfsigned.ca-bundle', 'utf8');
+const fs = require('fs');
+const http = require('http');
+const https = require('https');
+const certificate = fs.readFileSync('config/certs/selfsigned.crt', 'utf8');
+const privateKey = fs.readFileSync('config/certs/selfsigned.key', 'utf8');
+const ca = fs.readFileSync('config/certs/selfsigned.ca-bundle', 'utf8');
 
-var credentials = { key: privateKey, cert: certificate, ca: ca, };
-var express = require('express');
-var app = express();
+const credentials = { key: privateKey, cert: certificate, ca: ca, };
+const express = require('express');
+const app = express();
 
 const bodyParser = require("body-parser");
 const xmlparser = require('express-xml-bodyparser');
-var cors = require('cors')
+const cors = require('cors')
 const path = require("path");
 const morgan = require('morgan');
 
@@ -36,8 +36,8 @@ const routes = require("./src/routes");
 
 app.use("/api", routes);
 
-var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(8080, () => {
   console.log("server HTTP starting on port : " + 8080)
