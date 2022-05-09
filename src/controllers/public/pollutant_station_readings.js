@@ -63,8 +63,6 @@ const pollutantsReadingsByStations = async (req, res) => {
 
     let stationsObjects
 
-    console.table({groupByTime})
-
     if (!groupByTime) {
         stationsObjects = await getObjects(startDate, endDate, stations, pollutants)
     } else {
