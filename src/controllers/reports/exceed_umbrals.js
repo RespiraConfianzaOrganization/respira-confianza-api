@@ -1,31 +1,31 @@
-import {datesAreValids, pollutantsAreValids, stationsAreValids, thresholdAreValids} from "./validators";
-import {getUmbralsByPollutant} from "./queries";
-import models from "../../models";
-import {Op} from "sequelize";
+const {datesAreValid, pollutantsAreValid, stationsAreValid, thresholdAreValid} = require("./validators");
+const {getThresholdByPollutant} = require("./queries")
+const models = require("../../models");
+const {Op} = require("sequelize");
 
 const getErrors = ({startDate, endDate, pollutants, stations}) => {
     let errors = {}
-    if (!datesAreValids(startDate, endDate)) {
+    if (!datesAreValid(startDate, endDate)) {
         errors['dates'] = {
             startDate: 'Debe ser menor o igual que endDate y estar en YYYY-MM-DD',
             endDate: 'Debe ser mayor o igual que startDate y estar en formato YYYY-MM-DD'
         }
     }
-    if (!pollutantsAreValids(pollutants)) {
+    if (!pollutantsAreValid(pollutants)) {
         const models = errors['models'] || {}
         errors['models'] = {
             ...models,
             pollutants: 'Todos los pollutants deben existir en la db'
         }
     }
-    if (!stationsAreValids(stations)) {
+    if (!stationsAreValid(stations)) {
         const models = errors['models'] || {}
         errors['models'] = {
             ...models,
             stations: 'Todos las stations deben existir en la db'
         }
     }
-    if (!thresholdAreValids(pollutants)) {
+    if (!thresholdAreValid(pollutants)) {
         const models = errors['models'] || {}
         errors['models'] = {
             ...models,
@@ -56,7 +56,7 @@ const getTimesExceedThreshold = async ({stationId, threshold, pollutant, startDa
 const makeReport = async ({pollutants, stations, startDate, endDate}) => {
     const thresholdByPollutant = {}
     for (const p of pollutants) {
-        const thresholds = await getUmbralsByPollutant(p)
+        const thresholds = await getThresholdByPollutant(p)
         const {good, moderate, unhealthy, very_unhealthy} = thresholds
         for (const s of stations) {
             const results = await getTimesExceedThreshold({stationId: s, pollutant: p, startDate: startDate, endDate: endDate, threshold: good})

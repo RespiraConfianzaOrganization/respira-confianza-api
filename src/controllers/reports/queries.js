@@ -1,10 +1,14 @@
-import models from "../../models";
+const models = require("../../models");
 
-export const getUmbralsByPollutant = async (pollutant) => {
+const getThresholdByPollutant = async (pollutant) => {
     return await models.Umbrals.findOne({
         where: {pollutant},
         include: {
             model: models.Pollutant
         }
     })
+}
+
+module.exports = {
+    getThresholdByPollutant
 }

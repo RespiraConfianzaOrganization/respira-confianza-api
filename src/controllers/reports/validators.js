@@ -1,6 +1,6 @@
-import moment from "moment";
+const moment = require("moment");
 
-export const datesAreValids = (startDate, endDate) => {
+const datesAreValid = (startDate, endDate) => {
     try {
         const parsedStartDate = moment(startDate, 'YYYY-MM-DD')
         const parsedEndDate = moment(endDate, 'YYYY-MM-DD')
@@ -10,7 +10,7 @@ export const datesAreValids = (startDate, endDate) => {
     }
 }
 
-export const pollutantsAreValids = pollutants => {
+const pollutantsAreValid = pollutants => {
     try {
         return true
     } catch (e) {
@@ -18,7 +18,7 @@ export const pollutantsAreValids = pollutants => {
     }
 }
 
-export const stationsAreValids = pollutants => {
+const stationsAreValid = pollutants => {
     try {
        return true
     } catch (e) {
@@ -26,10 +26,14 @@ export const stationsAreValids = pollutants => {
     }
 }
 
-export const thresholdAreValids = pollutants => {
+const thresholdAreValid = pollutants => {
     try {
         return true
     } catch (e) {
         return false
     }
+}
+
+module.exports = {
+    datesAreValid, pollutantsAreValid, stationsAreValid, thresholdAreValid
 }
