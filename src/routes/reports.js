@@ -1,9 +1,9 @@
-const exceedUmbralsReportcontroller = require("../controllers/reports/exceed_umbrals");
+const reports = require("../controllers/reports/index");
 
 const addRoutes = (router) => {
     router.post(
         "/reports/exceed-threshold",
-        exceedUmbralsReportcontroller.receiveReportRequest
+        reports.exceedThresholdController
     );
 }
 

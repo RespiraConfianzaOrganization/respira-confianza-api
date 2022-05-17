@@ -84,7 +84,7 @@ const makeReport = async ({pollutants, stations, startDate, endDate}) => {
     return {hola: "xd"}
 }
 
-const receiveReportRequest = async (req, res) => {
+const exceedThresholdController = async (req, res) => {
     const errors = getErrors({...req.body})
     const hasErrors = Object.keys(errors).length > 0
     if (hasErrors) return res.status(400).json({message: errors})
@@ -94,5 +94,5 @@ const receiveReportRequest = async (req, res) => {
 }
 
 module.exports = {
-    receiveReportRequest
+    exceedThresholdController
 }
