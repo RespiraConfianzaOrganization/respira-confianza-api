@@ -11,6 +11,7 @@ const stationReadingRoutes = require('./station_readings')
 const stationRoutes = require('./stations')
 const umbralsRoutes = require('./umbrals')
 const pollutantsByStationsRoutes = require('./pollutants_by_stations')
+const reportsRoutes = require('./reports')
 
 adminRoutes.addRoutes(router)
 authRoutes.addRoutes(router)
@@ -22,5 +23,6 @@ stationReadingRoutes.addRoutes(router)
 stationRoutes.addRoutes(router)
 umbralsRoutes.addRoutes(router)
 pollutantsByStationsRoutes.addRoutes(router)
+reportsRoutes.addRoutes(router)
 
 module.exports = router

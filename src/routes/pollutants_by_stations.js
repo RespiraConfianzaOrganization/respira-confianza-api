@@ -1,9 +1,9 @@
-const pollutantsByStationController = require("../controllers/public/pollutant_station_readings");
+const reportsExceedsUmbrals = require("../controllers/reports/exceed_umbrals");
 
 const addRoutes = (router) => {
     router.post(
         "/pollutants-by-stations",
-        pollutantsByStationController.pollutantsByStations
+        reportsExceedsUmbrals.receiveReportRequest
     );
 }
 
