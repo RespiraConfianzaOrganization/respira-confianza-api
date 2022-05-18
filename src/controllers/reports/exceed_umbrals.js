@@ -65,6 +65,8 @@ const makeThresholdPairsByPollutant = async (p) => {
 const getReportDataPerPollutantAndStation = async ({pollutant, station, startDate, endDate}) => {
     const thresholdsPairs = await makeThresholdPairsByPollutant(pollutant)
     const output = {}
+    let globalResults = []
+
     output[station] = {}
     output[station][pollutant] = {}
 
@@ -75,6 +77,7 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
         endDate: endDate,
     }
 
+
     for (const thresholdPair of thresholdsPairs) {
         const [minValue, maxValue] = thresholdPair
         const results = await getTimesExceedThreshold({
@@ -84,13 +87,11 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
         })
 
         const key = `${minValue} - ${maxValue}`
-        const count = results.length
-
-        output[station][pollutant][key] = {
-            count: count,
-            results: results
-        }
+        globalResults = globalResults.concat(results)
+        output[station][pollutant][key] = results.length
     }
+
+    output[station][pollutant]['results'] = globalResults
 
     return output
 }

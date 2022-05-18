@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Emisión de contaminantes</title>
+    <style>
+        body {
+            width: 100vw;
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        }
+
+        .report-header {
+            color: rgb(102, 102, 102);
+            padding: 15px 15px 15px 200px;
+            display: flex;
+            align-content: center;
+            text-align: center;
+        }
+
+        .report-header .logo {
+            position: absolute;
+            top: 40px;
+            left: 15px;
+            width: 150px;
+        }
+
+
+        .report-body {
+            display: flex;
+            align-content: center;
+            vertical-align: center;
+        }
+
+        .report-body .info p {
+            border: #ccc solid 1px;
+            padding: 5px;
+            display: block;
+        }
+
+        .tables-container {
+            display: flex;
+            align-content: center;
+            gap: 10%;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+    </style>
+    <meta charset="utf-8">
+    <title></title>
+</head>
+<body>
+<div class="report-header">
+    <div class="logo">
+        <img src="https://respiraconfianza.cl/logo.svg" alt="Logo">
+    </div>
+    <div class="report-header-titles">
+        <h1>Reporte de excesos de umbrales en la calidad del aire</h1>
+        <p>Fecha de solicitud: {{requestDate}}</p>
+        <p>Contaminante: {{pollutantName}}</p>
+        <p>Estación: {{stationName}}</p>
+        <p>Datos obtenidos entre: {{startDate}} y {{endDate}}</p>
+    </div>
+
+</div>
+<div class="report-body">
+
+    <div class="info">
+        <div class="tables-container">
+            <div>
+            <h3>Rangos de medición</h3>
+            <table class="ranges-table">
+                <tr>
+                    <th>Tipo</th>
+                    <th>Valor ({{pollutantUnit}})</th>
+                </tr>
+                <tr>
+                    <td>Bueno</td>
+                    <td>{{good}}</td>
+                </tr>
+                <tr>
+                    <td>Moderado</td>
+                    <td>{{moderate}}</td>
+                </tr>
+                <tr>
+                    <td>Insalubre</td>
+                    <td>{{unhealthy}}</td>
+                </tr>
+                <tr>
+                    <td>Muy insalubre</td>
+                    <td>{{very_unhealthy}}</td>
+                </tr>
+            </table>
+            </div>
+            <div>
+            <h3>Cantidad de veces que se excedió</h3>
+            <table class="exceeds-table">
+                    <tr>
+                        <th>Rangos ({{pollutantUnit}})</th>
+                        <th>Cantidad de excesos</th>
+                    </tr>
+                    <tr>
+                        <td>Menor a {{good}}</td>
+                        <td>{{countA}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{good}} - {{moderate}}</td>
+                        <td>{{countB}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{moderate}} - {{unhealthy}}</td>
+                        <td>{{countC}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{unhealthy}} - {{very_unhealthy}}</td>
+                        <td>{{countD}}</td>
+                    </tr>
+                    <tr>
+                        <td>Mayor a {{very_unhealthy}}</td>
+                        <td>{{countE}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <h3>Detalles</h3>
+        {{detailedTable}}
+    </div>
+</div>
+</body>
+</html>
