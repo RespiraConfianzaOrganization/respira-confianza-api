@@ -8,31 +8,23 @@ const {datesAreValid, pollutantsAreValid, stationsAreValid, thresholdAreValid} =
 const getErrors = ({startDate, endDate, pollutants, stations}) => {
     let errors = {}
     if (!datesAreValid(startDate, endDate)) {
-        errors['dates'] = {
-            startDate: 'Debe ser menor o igual que endDate y estar en YYYY-MM-DD',
-            endDate: 'Debe ser mayor o igual que startDate y estar en formato YYYY-MM-DD'
-        }
+        errors['startDate'] = ['Debe ser menor o igual que endDate y estar en YYYY-MM-DD']
+        errors['endDate'] = ['Debe ser mayor o igual que startDate y estar en formato YYYY-MM-DD']
     }
     if (!pollutantsAreValid(pollutants)) {
-        const models = errors['models'] || {}
-        errors['models'] = {
-            ...models,
-            pollutants: 'Todos los pollutants deben existir en la db'
-        }
+        const currentError = errors['pollutants'] || []
+        currentError.push('Pollutants no encontrados')
+        errors['pollutants'] = currentError
     }
     if (!stationsAreValid(stations)) {
-        const models = errors['models'] || {}
-        errors['models'] = {
-            ...models,
-            stations: 'Todos las stations deben existir en la db'
-        }
+        const currentError = errors['stations'] || []
+        currentError.push('Estaciones no encontradas')
+        errors['stations'] = currentError
     }
     if (!thresholdAreValid(pollutants)) {
-        const models = errors['models'] || {}
-        errors['models'] = {
-            ...models,
-            umbrals: 'Todos los umbrales asociados a los pollutants deben existir en la db'
-        }
+        const currentError = errors['pollutants'] || []
+        currentError.push('Umbrales no encontrados para algunos pollutants')
+        errors['pollutants'] = currentError
     }
     return errors
 }
