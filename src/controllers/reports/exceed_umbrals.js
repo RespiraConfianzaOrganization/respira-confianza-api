@@ -106,7 +106,6 @@ const makeReport = async ({pollutants, stations, startDate, endDate}) => {
                     count: count,
                     results: results
                 }
-
             }
         }
     }
