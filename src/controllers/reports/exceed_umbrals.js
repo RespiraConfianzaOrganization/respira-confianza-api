@@ -129,24 +129,11 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
 }
 
 const createPDF = async (data) => {
-
     const templatePath = path.join(process.cwd(), 'src', 'static', 'exceedThresholdsTemplate.html')
-    const templateHtml = fs.readFileSync(templatePath, 'utf8');
-    const template = handlebars.compile(templateHtml);
-    const htmlContent = { content: template(data) };
-    console.log(htmlContent)
-
-    let milis = new Date();
-    milis = milis.getTime();
-
-    const pdfPath = path.join('./', `${milis}.pdf`);
-
-    let options = { format: 'A4' };
-
-
-    const file = await htmlToPdf.generatePdf(htmlContent, options)
-    fs.writeFileSync(pdfPath, file)
-
+    const templateHtml = fs.readFileSync(templatePath, 'utf8')
+    const template = handlebars.compile(templateHtml)
+    const htmlContent = { content: template(data) }
+    return await htmlToPdf.generatePdf(htmlContent, { format: 'A4' })
 }
 
 const exceedThresholdController = async (req, res) => {
@@ -154,10 +141,9 @@ const exceedThresholdController = async (req, res) => {
     const hasErrors = Object.keys(errors).length > 0
     if (hasErrors) return res.status(400).json({message: errors})
     const reportData = await getReportDataPerPollutantAndStation({...req.body})
-    await createPDF(reportData)
-    console.log('terminó')
-    return res.status(200).json(reportData)
-
+    const reportPDF = await createPDF(reportData)
+    res.contentType('application/pdf')
+    return res.send(reportPDF)
 }
 
 module.exports = {
