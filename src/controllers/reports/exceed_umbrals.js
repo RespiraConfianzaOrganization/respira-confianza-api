@@ -3,27 +3,27 @@ const {getThresholdByPollutant} = require("./queries")
 const models = require("../../models");
 const {Op} = require("sequelize");
 
-const {datesAreValid, pollutantsAreValid, stationsAreValid, thresholdAreValid} = validators;
+const {datesAreValid, pollutantIsValid, stationIsValid, thresholdIsValid} = validators;
 
-const getErrors = ({startDate, endDate, pollutants, stations}) => {
+const getErrors = ({startDate, endDate, pollutant, station}) => {
     let errors = {}
     if (!datesAreValid(startDate, endDate)) {
         errors['startDate'] = ['Debe ser menor o igual que endDate y estar en YYYY-MM-DD']
         errors['endDate'] = ['Debe ser mayor o igual que startDate y estar en formato YYYY-MM-DD']
     }
-    if (!pollutantsAreValid(pollutants)) {
-        const currentError = errors['pollutants'] || []
-        currentError.push('Pollutants no encontrados')
-        errors['pollutants'] = currentError
+    if (!pollutantIsValid(pollutant)) {
+        const currentError = errors['pollutant'] || []
+        currentError.push(`Pollutant ${pollutant} no encontrado`)
+        errors['pollutant'] = currentError
     }
-    if (!stationsAreValid(stations)) {
-        const currentError = errors['stations'] || []
-        currentError.push('Estaciones no encontradas')
-        errors['stations'] = currentError
+    if (!stationIsValid(station)) {
+        const currentError = errors['station'] || []
+        currentError.push(`Estación ${station} no encontrada`)
+        errors['station'] = currentError
     }
-    if (!thresholdAreValid(pollutants)) {
+    if (!thresholdIsValid(pollutant)) {
         const currentError = errors['pollutants'] || []
-        currentError.push('Umbrales no encontrados para algunos pollutants')
+        currentError.push(`Umbrales no encontrados para pollutant ${pollutant}`)
         errors['pollutants'] = currentError
     }
     return errors
@@ -62,54 +62,44 @@ const makeThresholdPairsByPollutant = async (p) => {
     return getConsecutivePairs(thresholdsValues)
 }
 
-const makeReport = async ({pollutants, stations, startDate, endDate}) => {
-    const thresholdByPollutant = {}
-    const thresholdPairsMap = pollutants.map(async p => await makeThresholdPairsByPollutant(p))
-    for (const s of stations) {
+const getReportDataPerPollutantAndStation = async ({pollutant, station, startDate, endDate}) => {
+    const thresholdsPairs = await makeThresholdPairsByPollutant(pollutant)
+    const output = {}
+    output[station] = {}
+    output[station][pollutant] = {}
 
-        thresholdByPollutant[s] = {}
+    const queryParams = {
+        stationId: station,
+        pollutant: pollutant,
+        startDate: startDate,
+        endDate: endDate,
+    }
 
-        for (const p of pollutants) {
+    for (const thresholdPair of thresholdsPairs) {
+        const [minValue, maxValue] = thresholdPair
+        const results = await getTimesExceedThreshold({
+            ...queryParams,
+            minThreshold: minValue,
+            maxThreshold: maxValue
+        })
 
-            thresholdByPollutant[s][p] = {}
+        const key = `${minValue} - ${maxValue}`
+        const count = results.length
 
-            const baseParams = {
-                stationId: s,
-                pollutant: p,
-                startDate: startDate,
-                endDate: endDate,
-            }
-
-            const index = pollutants.indexOf(p)
-            const pollutantThresholdsPairs = await thresholdPairsMap[index]
-
-            for (const thresholdPair of pollutantThresholdsPairs) {
-                const [minValue, maxValue] = thresholdPair
-                const results = await getTimesExceedThreshold({
-                    ...baseParams,
-                    minThreshold: minValue,
-                    maxThreshold: maxValue
-                })
-
-                const key = `${minValue} - ${maxValue}`
-                const count = results.length
-
-                thresholdByPollutant[s][p][key] = {
-                    count: count,
-                    results: results
-                }
-            }
+        output[station][pollutant][key] = {
+            count: count,
+            results: results
         }
     }
 
-    return thresholdByPollutant
+    return output
 }
 
 const exceedThresholdController = async (req, res) => {
     const errors = getErrors({...req.body})
     const hasErrors = Object.keys(errors).length > 0
     if (hasErrors) return res.status(400).json({message: errors})
-    const r = await makeReport({...req.body})
+    const r = await getReportDataPerPollutantAndStation({...req.body})
     return res.status(200).json({message: r})
 
 }

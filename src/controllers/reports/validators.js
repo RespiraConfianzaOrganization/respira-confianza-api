@@ -10,7 +10,7 @@ const datesAreValid = (startDate, endDate) => {
     }
 }
 
-const pollutantsAreValid = pollutants => {
+const pollutantIsValid = pollutantID => {
     try {
         return true
     } catch (e) {
@@ -18,7 +18,7 @@ const pollutantsAreValid = pollutants => {
     }
 }
 
-const stationsAreValid = pollutants => {
+const stationIsValid = stationID => {
     try {
        return true
     } catch (e) {
@@ -26,7 +26,7 @@ const stationsAreValid = pollutants => {
     }
 }
 
-const thresholdAreValid = pollutants => {
+const thresholdIsValid = pollutantID => {
     try {
         return true
     } catch (e) {
@@ -35,5 +35,5 @@ const thresholdAreValid = pollutants => {
 }
 
 module.exports = {
-    datesAreValid, pollutantsAreValid, stationsAreValid, thresholdAreValid
+    datesAreValid, pollutantIsValid, stationIsValid, thresholdIsValid
 }
