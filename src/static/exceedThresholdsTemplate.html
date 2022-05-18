@@ -138,7 +138,20 @@
             </div>
         </div>
         <h3>Detalles</h3>
-        {{detailedTable}}
+        <table class="values-table">
+            <tr>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Emisión ({{pollutantUnit}})</th>
+            </tr>
+            {{#each results}}
+            <tr>
+                <td>{{this.date}}</td>
+                <td>{{this.time}}</td>
+                <td>{{this.value}}</td>
+            </tr>
+            {{/each}}
+        </table>
     </div>
 </div>
 </body>
