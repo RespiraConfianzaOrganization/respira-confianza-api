@@ -1,7 +1,12 @@
 const validators = require("./validators");
-const {getThresholdByPollutant} = require("./queries")
+const {getThresholdByPollutant, getPollutant, getStation} = require("./queries")
 const models = require("../../models");
 const {Op} = require("sequelize");
+
+const fs = require("fs");
+const path = require("path");
+const handlebars = require("handlebars");
+const htmlToPdf = require('html-pdf-node');
 
 const {datesAreValid, pollutantIsValid, stationIsValid, thresholdIsValid} = validators;
 
@@ -38,11 +43,13 @@ const getTimesExceedThreshold = async ({stationId, minThreshold, maxThreshold, p
     }
     query[pollutant] = {[Op.between]: [minThreshold, maxThreshold]}
 
-    const attributes = ['station_id', 'recorded_at', 'updated_at', pollutant]
+    const attributes = ['station_id', 'recorded_at', 'updated_at', [pollutant, 'value']]
 
     return await models.Station_Readings.findAll({
         where: query,
         attributes: attributes,
+        raw: true,
+        nest: true
     })
 }
 
@@ -55,20 +62,27 @@ const getConsecutivePairs = array => {
     return output
 }
 
-const makeThresholdPairsByPollutant = async (p) => {
-    const thresholds = await getThresholdByPollutant(p)
+const makeThresholdPairsByPollutant = async (thresholds) => {
     const {good, moderate, unhealthy, very_unhealthy} = thresholds
     const thresholdsValues = [0, good, moderate, unhealthy, very_unhealthy, Infinity]
     return getConsecutivePairs(thresholdsValues)
 }
 
 const getReportDataPerPollutantAndStation = async ({pollutant, station, startDate, endDate}) => {
-    const thresholdsPairs = await makeThresholdPairsByPollutant(pollutant)
-    const output = {}
-    let globalResults = []
 
-    output[station] = {}
-    output[station][pollutant] = {}
+    const pollutantData = await getPollutant(pollutant)
+    const stationData = await getStation(station)
+    const thresholdData = await getThresholdByPollutant(pollutant)
+    const datesData = {
+        startDate: startDate,
+        endDate: endDate,
+        requestDate: startDate
+    }
+
+    const thresholdsPairs = await makeThresholdPairsByPollutant(thresholdData)
+
+    let ranges = []
+    let globalResults = []
 
     const queryParams = {
         stationId: station,
@@ -77,31 +91,72 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
         endDate: endDate,
     }
 
-
-    for (const thresholdPair of thresholdsPairs) {
-        const [minValue, maxValue] = thresholdPair
+    for (let i = 0; i < thresholdsPairs.length; i++) {
+        const [minValue, maxValue] = thresholdsPairs[i]
         const results = await getTimesExceedThreshold({
             ...queryParams,
             minThreshold: minValue,
             maxThreshold: maxValue
         })
 
-        const key = `${minValue} - ${maxValue}`
         globalResults = globalResults.concat(results)
-        output[station][pollutant][key] = results.length
+
+        let rangeKey = ''
+
+        if (i === 0) {
+            rangeKey = `Menor a ${maxValue}`
+        } else if (i === thresholdsPairs.length - 1) {
+            rangeKey = `Mayor a ${minValue}`
+        } else {
+            rangeKey = `${minValue} - ${maxValue}`
+        }
+
+        ranges.push({
+            key: rangeKey,
+            count: results.length
+        })
+
     }
 
-    output[station][pollutant]['results'] = globalResults
+    return {
+        pollutant: pollutantData,
+        station: stationData,
+        threshold: thresholdData,
+        dates: datesData,
+        ranges: ranges,
+        results: globalResults
+    }
+}
 
-    return output
+const createPDF = async (data) => {
+
+    const templatePath = path.join(process.cwd(), 'src', 'static', 'exceedThresholdsTemplate.html')
+    const templateHtml = fs.readFileSync(templatePath, 'utf8');
+    const template = handlebars.compile(templateHtml);
+    const htmlContent = { content: template(data) };
+    console.log(htmlContent)
+
+    let milis = new Date();
+    milis = milis.getTime();
+
+    const pdfPath = path.join('./', `${milis}.pdf`);
+
+    let options = { format: 'A4' };
+
+
+    const file = await htmlToPdf.generatePdf(htmlContent, options)
+    fs.writeFileSync(pdfPath, file)
+
 }
 
 const exceedThresholdController = async (req, res) => {
     const errors = getErrors({...req.body})
     const hasErrors = Object.keys(errors).length > 0
     if (hasErrors) return res.status(400).json({message: errors})
-    const r = await getReportDataPerPollutantAndStation({...req.body})
-    return res.status(200).json({message: r})
+    const reportData = await getReportDataPerPollutantAndStation({...req.body})
+    await createPDF(reportData)
+    console.log('terminó')
+    return res.status(200).json(reportData)
 
 }
 

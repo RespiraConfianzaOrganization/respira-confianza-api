@@ -5,10 +5,29 @@ const getThresholdByPollutant = async (pollutant) => {
         where: {pollutant},
         include: {
             model: models.Pollutant
-        }
+        },
+        raw: true,
+        nest: true
+    })
+}
+
+const getPollutant = async (name) => {
+    return await models.Pollutant.findOne({
+        where: {name},
+        raw: true,
+        nest: true
+    });
+
+}
+
+const getStation = async (id) => {
+    return await models.Station.findOne({
+        where: {id},
+        raw: true,
+        nest: true
     })
 }
 
 module.exports = {
-    getThresholdByPollutant
+    getThresholdByPollutant, getPollutant, getStation
 }

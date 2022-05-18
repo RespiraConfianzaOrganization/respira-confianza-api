@@ -71,10 +71,10 @@
     </div>
     <div class="report-header-titles">
         <h1>Reporte de excesos de umbrales en la calidad del aire</h1>
-        <p>Fecha de solicitud: {{requestDate}}</p>
-        <p>Contaminante: {{pollutantName}}</p>
-        <p>Estación: {{stationName}}</p>
-        <p>Datos obtenidos entre: {{startDate}} y {{endDate}}</p>
+        <p>Fecha de solicitud: {{dates.requestDate}}</p>
+        <p>Contaminante: {{pollutant.extendedName}} {{pollutant.name}}</p>
+        <p>Estación: {{station.name}}</p>
+        <p>Datos obtenidos entre: {{dates.startDate}} y {{dates.endDate}}</p>
     </div>
 
 </div>
@@ -87,23 +87,23 @@
             <table class="ranges-table">
                 <tr>
                     <th>Tipo</th>
-                    <th>Valor ({{pollutantUnit}})</th>
+                    <th>Valor ({{pollutant.unit}})</th>
                 </tr>
                 <tr>
                     <td>Bueno</td>
-                    <td>{{good}}</td>
+                    <td>{{threshold.good}}</td>
                 </tr>
                 <tr>
                     <td>Moderado</td>
-                    <td>{{moderate}}</td>
+                    <td>{{threshold.moderate}}</td>
                 </tr>
                 <tr>
                     <td>Insalubre</td>
-                    <td>{{unhealthy}}</td>
+                    <td>{{threshold.unhealthy}}</td>
                 </tr>
                 <tr>
                     <td>Muy insalubre</td>
-                    <td>{{very_unhealthy}}</td>
+                    <td>{{threshold.very_unhealthy}}</td>
                 </tr>
             </table>
             </div>
@@ -111,43 +111,27 @@
             <h3>Cantidad de veces que se excedió</h3>
             <table class="exceeds-table">
                     <tr>
-                        <th>Rangos ({{pollutantUnit}})</th>
+                        <th>Rangos ({{pollutant.unit}})</th>
                         <th>Cantidad de excesos</th>
                     </tr>
+                    {{#each ranges}}
                     <tr>
-                        <td>Menor a {{good}}</td>
-                        <td>{{countA}}</td>
+                        <td>{{this.key}}</td>
+                        <td>{{this.count}}</td>
                     </tr>
-                    <tr>
-                        <td>{{good}} - {{moderate}}</td>
-                        <td>{{countB}}</td>
-                    </tr>
-                    <tr>
-                        <td>{{moderate}} - {{unhealthy}}</td>
-                        <td>{{countC}}</td>
-                    </tr>
-                    <tr>
-                        <td>{{unhealthy}} - {{very_unhealthy}}</td>
-                        <td>{{countD}}</td>
-                    </tr>
-                    <tr>
-                        <td>Mayor a {{very_unhealthy}}</td>
-                        <td>{{countE}}</td>
-                    </tr>
+                    {{/each}}
                 </table>
             </div>
         </div>
         <h3>Detalles</h3>
         <table class="values-table">
             <tr>
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Emisión ({{pollutantUnit}})</th>
+                <th>Timestamp</th>
+                <th>Emisión ({{pollutant.unit}})</th>
             </tr>
             {{#each results}}
             <tr>
-                <td>{{this.date}}</td>
-                <td>{{this.time}}</td>
+                <td>{{this.recorded_at}}</td>
                 <td>{{this.value}}</td>
             </tr>
             {{/each}}
