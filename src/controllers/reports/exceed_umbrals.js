@@ -1,7 +1,9 @@
-const {datesAreValid, pollutantsAreValid, stationsAreValid, thresholdAreValid} = require("./validators");
+const validators = require("./validators");
 const {getThresholdByPollutant} = require("./queries")
 const models = require("../../models");
 const {Op} = require("sequelize");
+
+const {datesAreValid, pollutantsAreValid, stationsAreValid, thresholdAreValid} = validators;
 
 const getErrors = ({startDate, endDate, pollutants, stations}) => {
     let errors = {}
@@ -44,10 +46,12 @@ const getTimesExceedThreshold = async ({stationId, minThreshold, maxThreshold, p
     }
     query[pollutant] = {[Op.between]: [minThreshold, maxThreshold]}
 
-    const xd = await models.Station_Readings.findAll({
+    const attributes = ['station_id', 'recorded_at', 'updated_at', pollutant]
+
+    return await models.Station_Readings.findAll({
         where: query,
-    });
-    return xd
+        attributes: attributes,
+    })
 }
 
 const getConsecutivePairs = array => {
@@ -59,29 +63,55 @@ const getConsecutivePairs = array => {
     return output
 }
 
+const makeThresholdPairsByPollutant = async (p) => {
+    const thresholds = await getThresholdByPollutant(p)
+    const {good, moderate, unhealthy, very_unhealthy} = thresholds
+    const thresholdsValues = [0, good, moderate, unhealthy, very_unhealthy, Infinity]
+    return getConsecutivePairs(thresholdsValues)
+}
+
 const makeReport = async ({pollutants, stations, startDate, endDate}) => {
     const thresholdByPollutant = {}
-    for (const p of pollutants) {
-        const thresholds = await getThresholdByPollutant(p)
-        const {good, moderate, unhealthy, very_unhealthy} = thresholds
-        const thresholdsValues = [0, good, moderate, unhealthy, very_unhealthy, Infinity]
-        const thresholdPairs = getConsecutivePairs(thresholdsValues)
-        for (const s of stations) {
-            for (const thresholdPair of thresholdPairs) {
+    const thresholdPairsMap = pollutants.map(async p => await makeThresholdPairsByPollutant(p))
+    for (const s of stations) {
+
+        thresholdByPollutant[s] = {}
+
+        for (const p of pollutants) {
+
+            thresholdByPollutant[s][p] = {}
+
+            const baseParams = {
+                stationId: s,
+                pollutant: p,
+                startDate: startDate,
+                endDate: endDate,
+            }
+
+            const index = pollutants.indexOf(p)
+            const pollutantThresholdsPairs = await thresholdPairsMap[index]
+
+            for (const thresholdPair of pollutantThresholdsPairs) {
                 const [minValue, maxValue] = thresholdPair
                 const results = await getTimesExceedThreshold({
-                    stationId: s,
-                    pollutant: p,
-                    startDate: startDate,
-                    endDate: endDate,
+                    ...baseParams,
                     minThreshold: minValue,
                     maxThreshold: maxValue
                 })
-            }
 
+                const key = `${minValue} - ${maxValue}`
+                const count = results.length
+
+                thresholdByPollutant[s][p][key] = {
+                    count: count,
+                    results: results
+                }
+
+            }
         }
     }
-    return {hola: "xd"}
+
+    return thresholdByPollutant
 }
 
 const exceedThresholdController = async (req, res) => {
