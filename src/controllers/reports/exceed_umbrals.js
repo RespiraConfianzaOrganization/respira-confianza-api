@@ -116,8 +116,7 @@ const exceedThresholdController = async (req, res) => {
     const reportData = await getReportDataPerPollutantAndStation({...req.body})
     const templatePath = path.join(process.cwd(), 'src', 'static', 'exceedThresholdsTemplate.html')
     const reportPDF = await createPDF(reportData, templatePath)
-    res.contentType('application/pdf')
-    return res.send(reportPDF)
+    return res.status(200).contentType('application/pdf').send(reportPDF)
 }
 
 module.exports = {

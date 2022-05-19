@@ -10,7 +10,7 @@ const datesAreValid = (startDate, endDate) => {
     }
 }
 
-const pollutantIsValid = pollutantID => {
+const pollutantIsValid = pollutantName => {
     try {
         return true
     } catch (e) {
@@ -26,7 +26,7 @@ const stationIsValid = stationID => {
     }
 }
 
-const thresholdIsValid = pollutantID => {
+const thresholdIsValid = pollutantName => {
     try {
         return true
     } catch (e) {
