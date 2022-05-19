@@ -1,4 +1,13 @@
 const moment = require("moment");
+const {getPollutant, getStation, getThresholdByPollutant} = require("./queries");
+
+const isValidDate = value => {
+    try {
+        return moment(value, 'YYYY-MM-DD').isValid()
+    } catch(e) {
+        return false
+    }
+}
 
 const datesAreValid = (startDate, endDate) => {
     try {
@@ -10,30 +19,33 @@ const datesAreValid = (startDate, endDate) => {
     }
 }
 
-const pollutantIsValid = pollutantName => {
+const pollutantIsValid = async (pollutantName) => {
     try {
-        return true
+        const pollutant = await getPollutant(pollutantName)
+        return pollutantName.toString() === pollutant.name.toString()
     } catch (e) {
         return false
     }
 }
 
-const stationIsValid = stationID => {
+const stationIsValid = async (stationID) => {
     try {
-       return true
+       const station = await getStation(stationID)
+       return stationID.toString() === station.id.toString()
     } catch (e) {
         return false
     }
 }
 
-const thresholdIsValid = pollutantName => {
+const thresholdIsValid = async (pollutantName) => {
     try {
-        return true
+        const threshold = await getThresholdByPollutant(pollutantName)
+        return threshold.Pollutant.name.toString() === pollutantName.toString()
     } catch (e) {
         return false
     }
 }
 
 module.exports = {
-    datesAreValid, pollutantIsValid, stationIsValid, thresholdIsValid
+    isValidDate, datesAreValid, pollutantIsValid, stationIsValid, thresholdIsValid
 }

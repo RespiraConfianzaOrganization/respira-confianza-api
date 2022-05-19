@@ -6,28 +6,42 @@ const path = require("path");
 const handlebars = require("handlebars");
 const htmlToPdf = require('html-pdf-node');
 
-const {datesAreValid, pollutantIsValid, stationIsValid, thresholdIsValid} = validators;
+const {isValidDate, datesAreValid, pollutantIsValid, stationIsValid, thresholdIsValid} = validators;
 
-const getErrors = ({startDate, endDate, pollutant, station}) => {
+const getErrors = async ({startDate, endDate, pollutant, station, requestDate}) => {
     let errors = {}
-    if (!datesAreValid(startDate, endDate)) {
-        errors['startDate'] = ['Debe ser menor o igual que endDate y estar en YYYY-MM-DD']
-        errors['endDate'] = ['Debe ser mayor o igual que startDate y estar en formato YYYY-MM-DD']
+    if (!isValidDate(startDate)) {
+        errors['startDate'] = ['Fecha obligatoria. Debe estar en formato YYYY-MM-DD']
     }
-    if (!pollutantIsValid(pollutant)) {
+    if (!isValidDate(endDate)) {
+        errors['endDate'] = ['Fecha obligatoria. Debe estar en formato YYYY-MM-DD']
+    }
+    if (!isValidDate(requestDate)) {
+        errors['requestDate'] = ['Debe estar en formato YYYY-MM-DD']
+    }
+    if (!datesAreValid(startDate, endDate)) {
+        const currentStartDateErrors = errors['startDate'] || []
+        currentStartDateErrors.push('Debe ser menor o igual que endDate y estar en YYYY-MM-DD')
+        errors['startDate'] = currentStartDateErrors
+
+        const currentEndDateErrors = errors['endDate'] || []
+        currentEndDateErrors.push('Debe ser mayor o igual que startDate y estar en formato YYYY-MM-DD')
+        errors['endDate'] = currentEndDateErrors
+    }
+    if (!await pollutantIsValid(pollutant)) {
         const currentError = errors['pollutant'] || []
         currentError.push(`Pollutant ${pollutant} no encontrado`)
         errors['pollutant'] = currentError
     }
-    if (!stationIsValid(station)) {
+    if (!await stationIsValid(station)) {
         const currentError = errors['station'] || []
         currentError.push(`Estación ${station} no encontrada`)
         errors['station'] = currentError
     }
-    if (!thresholdIsValid(pollutant)) {
-        const currentError = errors['pollutants'] || []
+    if (!await thresholdIsValid(pollutant)) {
+        const currentError = errors['pollutant'] || []
         currentError.push(`Umbrales no encontrados para pollutant ${pollutant}`)
-        errors['pollutants'] = currentError
+        errors['pollutant'] = currentError
     }
     return errors
 }
@@ -57,7 +71,7 @@ const getLabel = ({isLastValue, isFirstValue, minValue, maxValue}) => {
     }
 }
 
-const getReportDataPerPollutantAndStation = async ({pollutant, station, startDate, endDate}) => {
+const getReportDataPerPollutantAndStation = async ({pollutant, station, startDate, endDate, requestDate}) => {
 
     const pollutantData = await getPollutant(pollutant)
     const stationData = await getStation(station)
@@ -65,7 +79,7 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
     const datesData = {
         startDate: startDate,
         endDate: endDate,
-        requestDate: startDate
+        requestDate: requestDate
     }
     const thresholdsPairs = await makeThresholdPairsByPollutant(thresholdData)
     let ranges = []
@@ -110,11 +124,12 @@ const createPDF = async (data, templatePath) => {
 }
 
 const exceedThresholdController = async (req, res) => {
-    const errors = getErrors({...req.body})
+    const body = req.body
+    const errors = await getErrors({...body})
     const hasErrors = Object.keys(errors).length > 0
     if (hasErrors) return res.status(400).json({message: errors})
-    const reportData = await getReportDataPerPollutantAndStation({...req.body})
-    const templatePath = path.join(process.cwd(), 'src', 'static', 'exceedThresholdsTemplate.html')
+    const reportData = await getReportDataPerPollutantAndStation({...body})
+    const templatePath = path.join(process.cwd(), 'src/static/exceedThresholdsTemplate.html')
     const reportPDF = await createPDF(reportData, templatePath)
     return res.status(200).contentType('application/pdf').send(reportPDF)
 }
