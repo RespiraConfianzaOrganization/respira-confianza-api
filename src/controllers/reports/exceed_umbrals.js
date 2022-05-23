@@ -127,7 +127,7 @@ const exceedThresholdController = async (req, res) => {
     const body = req.body
     const errors = await getErrors({...body})
     const hasErrors = Object.keys(errors).length > 0
-    if (hasErrors) return res.status(400).json({message: errors})
+    if (hasErrors) return res.status(400).json({errors: errors})
     const reportData = await getReportDataPerPollutantAndStation({...body})
     const templatePath = path.join(process.cwd(), 'src/static/exceedThresholdsTemplate.html')
     const reportPDF = await createPDF(reportData, templatePath)
