@@ -1,4 +1,4 @@
-const {exceedThresholdController} = require('./exceed_umbrals')
+const {exceedThresholdController} = require('./exceedThresholds')
 
 module.exports = {
     exceedThresholdController
