@@ -33,7 +33,7 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
     const thresholdData = await getThresholdByPollutant(pollutant)
     const thresholdsPairs = await makeThresholdPairsByPollutant(thresholdData)
 
-    let ranges = []
+    const ranges = []
     let globalResults = []
 
     for (let i = 0; i < thresholdsPairs.length; i++) {
