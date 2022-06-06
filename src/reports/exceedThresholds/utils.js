@@ -1,6 +1,5 @@
 const {getPollutant, getStation, getThresholdByPollutant, getTimesExceedThreshold} = require("../queries");
-const {getDataURL} = require("./plot");
-const {getCurrentDatasets} = require("./dataset");
+const {getChartBase64, makeDataset} = require("./plot");
 
 const getConsecutivePairs = array => {
     const output = []
@@ -32,14 +31,11 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
     const pollutantData = await getPollutant(pollutant)
     const stationData = await getStation(station)
     const thresholdData = await getThresholdByPollutant(pollutant)
-    const datesData = {
-        startDate: startDate,
-        endDate: endDate,
-        requestDate: requestDate
-    }
     const thresholdsPairs = await makeThresholdPairsByPollutant(thresholdData)
+
     let ranges = []
     let globalResults = []
+
     for (let i = 0; i < thresholdsPairs.length; i++) {
         const [minValue, maxValue] = thresholdsPairs[i]
         const results = await getTimesExceedThreshold({
@@ -63,21 +59,24 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
         globalResults = globalResults.concat(results)
     }
 
-    const dataset = getCurrentDatasets({
+    const dataset = makeDataset({
         readings: globalResults,
         station: stationData,
         thresholds: thresholdData
     })
 
-    const dataUrl = await getDataURL(dataset, pollutantData.unit)
+    const dataUrl = await getChartBase64(dataset, pollutantData.unit)
 
     return {
         pollutant: pollutantData,
         station: stationData,
         threshold: thresholdData,
-        dates: datesData,
+        dates: {
+            startDate: startDate,
+            endDate: endDate,
+            requestDate: requestDate
+        },
         ranges: ranges,
-        results: globalResults,
         chart: {
             src: dataUrl,
             alt: "Plot"
