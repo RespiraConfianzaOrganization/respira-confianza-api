@@ -1,10 +1,15 @@
 const {chartJSNodeCanvas} = require("./chart");
+const adapter = require("chartjs-adapter-moment")
 
 
-const getDataURL = async (dataset) => {
+const getDataURL = async (dataset, pollutantUnit) => {
+
     const [currentData] = dataset
     const {data} = currentData
     const labels = data.map(value => value.x).sort()
+
+    const title = []
+
     const conf =  {
         type: 'bar',
         data: {
@@ -22,6 +27,10 @@ const getDataURL = async (dataset) => {
                 legend: {
                     position: 'bottom',
                 },
+                title: {
+                    display: true,
+                    text: 'Custom Chart Title'
+                }
             },
             scales: {
                 x: {
@@ -31,13 +40,18 @@ const getDataURL = async (dataset) => {
                     },
                     type: 'timeseries',
                     time: {
-                        'unit': 'month'
+                        'unit': 'day'
                     },
+                    ticks: {
+                        autoSkip: false,
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
                 },
                 y: {
                     title: {
                         display: true,
-                        text: `Concentración ${"pollutantUnit"}`
+                        text: `Concentración ${pollutantUnit}`
                     },
                 }
             }

@@ -1,5 +1,5 @@
-const {exceedThresholdController} = require('./exceedThresholds')
+const {exceedThreshold} = require('./exceedThresholds')
 
 module.exports = {
-    exceedThresholdController
+    exceedThreshold
 }

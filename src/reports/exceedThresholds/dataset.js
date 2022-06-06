@@ -1,53 +1,23 @@
 const moment = require("moment")
 
-const getOptions = ({pollutantUnit, xScales, yScales}) => {
-
-    return {
-        animations: false,
-        showLine: false,
-        hover: {
-            animationDuration: 0
-        },
-        responsiveAnimationDuration: 0,
-        plugins: {
-            legend: {
-                position: 'bottom',
-            },
-        },
-        scales: {
-            x: {
-                title: {
-                    display: true,
-                    text: 'Fecha'
-                },
-                type: 'timeseries',
-                time: {
-                    'unit': 'month'
-                },
-                ...xScales
-            },
-            y: {
-                title: {
-                    display: true,
-                    text: `Concentración ${pollutantUnit}`
-                },
-                ...yScales
-            }
-        }
-    }
+Number.prototype.between = function (min, max) {
+    if (min && max) return this >= min && this <= max
+    else if (min && !max) return this >= min
+    else if (!min && max) return this <= max
+    else return false
 }
 
 const getColorDependingOnThreshold = ({value, thresholds}) => {
     // https://color-hex.org/color-palettes/187
     const {good, moderate, unhealthy, very_unhealthy} = thresholds
     let color
-    if (value <= good){
+    if (value.between(0, good)){
         color = '#2cba00'
-    } else if (value >= good && value <= moderate){
+    } else if (value.between(good, moderate)){
         color = '#a3ff00'
-    } else if (value >= moderate && value <= unhealthy){
+    } else if (value.between(moderate, unhealthy)){
         color = '#fff400'
-    } else if (value >= unhealthy && value <= very_unhealthy){
+    } else if (value.between(unhealthy, very_unhealthy)){
         color = '#ffa700'
     } else {
         color = '#ff0000'
@@ -66,7 +36,7 @@ const getCurrentDatasets = ({readings, station, thresholds}) => {
             y: o.value,
         }
         const currentColor = getColorDependingOnThreshold({
-            value: value.y,
+            value: o.value,
             thresholds: thresholds
         })
         dotsColors.push(currentColor)

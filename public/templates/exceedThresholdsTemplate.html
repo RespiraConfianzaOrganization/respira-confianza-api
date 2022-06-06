@@ -27,10 +27,13 @@
             <div>
             <h3>Rangos de medición</h3>
             <table>
+                <thead>
                 <tr>
                     <th>Tipo</th>
                     <th>Valor ({{pollutant.unit}})</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr>
                     <td>Bueno</td>
                     <td>{{threshold.good}}</td>
@@ -47,6 +50,7 @@
                     <td>Muy insalubre</td>
                     <td>{{threshold.very_unhealthy}}</td>
                 </tr>
+                </tbody>
             </table>
             </div>
             <div>
@@ -69,22 +73,6 @@
         <div class="chart-container">
             <img alt="{{chart.alt}}" src="{{chart.src}}">
         </div>
-        <table class="values-table">
-            <thead>
-            <tr>
-                <th>Timestamp</th>
-                <th>Emisión ({{pollutant.unit}})</th>
-            </tr>
-            </thead>
-            <tbody>
-            {{#each results}}
-            <tr>
-                <td>{{this.recorded_at}}</td>
-                <td>{{this.value}}</td>
-            </tr>
-            {{/each}}
-            </tbody>
-        </table>
     </div>
 </div>
 </body>

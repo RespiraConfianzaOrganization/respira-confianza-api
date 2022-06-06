@@ -69,7 +69,7 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
         thresholds: thresholdData
     })
 
-    const dataUrl = await getDataURL(dataset, startDate, endDate)
+    const dataUrl = await getDataURL(dataset, pollutantData.unit)
 
     return {
         pollutant: pollutantData,
@@ -80,7 +80,7 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
         results: globalResults,
         chart: {
             src: dataUrl,
-            alt: "hola"
+            alt: "Plot"
         }
     }
 }
