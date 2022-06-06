@@ -4,7 +4,6 @@ const handlebars = require("handlebars");
 const htmlToPdf = require('html-pdf-node');
 const {getErrors} = require("./validator");
 const {getReportDataPerPollutantAndStation} = require("./utils");
-const {getDataURL} = require("./plot");
 
 const createPDF = async (data, templatePath) => {
     const templateHtml = fs.readFileSync(templatePath, 'utf8')
@@ -16,7 +15,7 @@ const createPDF = async (data, templatePath) => {
     return await htmlToPdf.generatePdf(htmlContent, options).catch(e => console.log(e))
 }
 
-const exceedThresholdController = async (req, res) => {
+const exceedThreshold = async (req, res) => {
     const body = req.body
     const errors = await getErrors({...body})
     const hasErrors = Object.keys(errors).length > 0
@@ -28,5 +27,5 @@ const exceedThresholdController = async (req, res) => {
 }
 
 module.exports = {
-    exceedThresholdController
+    exceedThreshold
 }

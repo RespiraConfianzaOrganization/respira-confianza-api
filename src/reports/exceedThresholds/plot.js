@@ -1,44 +1,50 @@
-const { ChartJSNodeCanvas } = require('chartjs-node-canvas');
+const {chartJSNodeCanvas} = require("./chart");
 
-const width = 400; //px
-const height = 400; //px
-const backgroundColour = 'white'; // Uses https://www.w3schools.com/tags/canvas_fillstyle.asp
-const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, backgroundColour });
 
-const configuration = {
-    type: 'line',   // for line chart
-    data: {
-        labels: [2018, 2019, 2020, 2021],
-        datasets: [{
-            label: "Sample 1",
-            data: [10, 15, -20, 15],
-            fill: false,
-            borderColor: ['rgb(51, 204, 204)'],
-            borderWidth: 1,
-            xAxisID: 'xAxis1' //define top or bottom axis ,modifies on scale
+const getDataURL = async (dataset) => {
+    const [currentData] = dataset
+    const {data} = currentData
+    const labels = data.map(value => value.x).sort()
+    const conf =  {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: dataset,
         },
-            {
-                label: "Sample 2",
-                data: [10, 30, 20, 10],
-                fill: false,
-                borderColor: ['rgb(255, 102, 255)'],
-                borderWidth: 1,
-                xAxisID: 'xAxis1'
+        options: {
+            animations: false,
+            showLine: false,
+            hover: {
+                animationDuration: 0
             },
-        ],
-
-    },
-    options: {
-        scales: {
-            y: {
-                suggestedMin: 0,
+            responsiveAnimationDuration: 0,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Fecha'
+                    },
+                    type: 'timeseries',
+                    time: {
+                        'unit': 'month'
+                    },
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: `Concentración ${"pollutantUnit"}`
+                    },
+                }
             }
         }
-    }
-};
+    };
 
-const getDataURL = async () => {
-    return await chartJSNodeCanvas.renderToDataURL(configuration)
+    return await chartJSNodeCanvas.renderToDataURL(conf)
 }
 
 module.exports = {

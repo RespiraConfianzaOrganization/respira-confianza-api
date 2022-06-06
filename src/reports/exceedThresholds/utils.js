@@ -1,4 +1,6 @@
 const {getPollutant, getStation, getThresholdByPollutant, getTimesExceedThreshold} = require("../queries");
+const {getDataURL} = require("./plot");
+const {getCurrentDatasets} = require("./dataset");
 
 const getConsecutivePairs = array => {
     const output = []
@@ -60,6 +62,15 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
         })
         globalResults = globalResults.concat(results)
     }
+
+    const dataset = getCurrentDatasets({
+        readings: globalResults,
+        station: stationData,
+        thresholds: thresholdData
+    })
+
+    const dataUrl = await getDataURL(dataset, startDate, endDate)
+
     return {
         pollutant: pollutantData,
         station: stationData,
@@ -68,7 +79,7 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
         ranges: ranges,
         results: globalResults,
         chart: {
-            src: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.paessler.com%2Fes%2Fit-explained%2Fmqtt&psig=AOvVaw3Fq-PA9me-5SOWSuCu3FQS&ust=1654201484793000&source=images&cd=vfe&ved=0CAwQjRxqFwoTCMi7mfKKjfgCFQAAAAAdAAAAABAD",
+            src: dataUrl,
             alt: "hola"
         }
     }
