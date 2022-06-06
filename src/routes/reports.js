@@ -1,4 +1,4 @@
-const reports = require("../controllers/reports/index");
+const reports = require("../reports/index");
 
 const addRoutes = (router) => {
     router.post(

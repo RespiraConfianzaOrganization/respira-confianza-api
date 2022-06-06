@@ -66,7 +66,11 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
         threshold: thresholdData,
         dates: datesData,
         ranges: ranges,
-        results: globalResults
+        results: globalResults,
+        chart: {
+            src: "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.paessler.com%2Fes%2Fit-explained%2Fmqtt&psig=AOvVaw3Fq-PA9me-5SOWSuCu3FQS&ust=1654201484793000&source=images&cd=vfe&ved=0CAwQjRxqFwoTCMi7mfKKjfgCFQAAAAAdAAAAABAD",
+            alt: "hola"
+        }
     }
 }
 

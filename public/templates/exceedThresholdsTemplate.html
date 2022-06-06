@@ -2,67 +2,9 @@
 <html lang="es">
 <head>
     <title>Emisión de contaminantes</title>
-    <style>
-        body {
-            width: 100vw;
-            font-size: 16px;
-            line-height: 24px;
-            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-        }
-
-        .report-header {
-            color: rgb(102, 102, 102);
-            padding: 15px 15px 15px 200px;
-            display: flex;
-            align-content: center;
-            text-align: center;
-        }
-
-        .report-header .logo {
-            position: absolute;
-            top: 40px;
-            left: 15px;
-            width: 150px;
-        }
-
-
-        .report-body {
-            display: flex;
-            align-content: center;
-            vertical-align: center;
-        }
-
-        .report-body .info p {
-            border: #ccc solid 1px;
-            padding: 5px;
-            display: block;
-        }
-
-        .tables-container {
-            display: flex;
-            align-content: center;
-            gap: 10%;
-        }
-
-        table {
-            /*font-family: arial, sans-serif;*/
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        td, th {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-
-        tr:nth-child(even) {
-            background-color: #dddddd;
-        }
-
-    </style>
     <meta charset="utf-8">
     <title></title>
+    <link rel='stylesheet' type='text/css' href='http://localhost:8080/styles/styles.css' />
 </head>
 <body>
 <div class="report-header">
@@ -84,7 +26,7 @@
         <div class="tables-container">
             <div>
             <h3>Rangos de medición</h3>
-            <table class="ranges-table">
+            <table>
                 <tr>
                     <th>Tipo</th>
                     <th>Valor ({{pollutant.unit}})</th>
@@ -124,17 +66,24 @@
             </div>
         </div>
         <h3>Detalles</h3>
+        <div class="chart-container">
+            <img alt="{{chart.alt}}" src="{{chart.src}}">
+        </div>
         <table class="values-table">
+            <thead>
             <tr>
                 <th>Timestamp</th>
                 <th>Emisión ({{pollutant.unit}})</th>
             </tr>
+            </thead>
+            <tbody>
             {{#each results}}
             <tr>
                 <td>{{this.recorded_at}}</td>
                 <td>{{this.value}}</td>
             </tr>
             {{/each}}
+            </tbody>
         </table>
     </div>
 </div>
