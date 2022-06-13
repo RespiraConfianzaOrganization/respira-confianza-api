@@ -25,7 +25,7 @@
     <div class="info">
         <div class="tables-container">
             <div>
-            <h3>Rangos de medición</h3>
+            <h3>Rangos en los que se mide el contaminante</h3>
             <table>
                 <thead>
                 <tr>
@@ -54,7 +54,7 @@
             </table>
             </div>
             <div>
-            <h3>Cantidad de veces que se excedió</h3>
+            <h3>Cantidad de veces que contaminante excedió los umbrales permitidos</h3>
             <table class="exceeds-table">
                     <tr>
                         <th>Rangos ({{pollutant.unit}})</th>
@@ -71,6 +71,7 @@
         </div>
         <h3>Detalles</h3>
         <div class="chart-container">
+            <h4>Mediciones obtenidas entre {{dates.startDate}} y {{dates.endDate}}</h4>
             <img alt="{{chart.alt}}" src="{{chart.src}}">
         </div>
     </div>
