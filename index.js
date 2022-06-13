@@ -37,14 +37,12 @@ const routes = require("./src/routes");
 app.use("/api", routes);
 
 const httpServer = http.createServer(app);
-// const httpsServer = https.createServer(credentials, app);
+const httpsServer = https.createServer(credentials, app);
 
-const port = process.env.PORT || 8000
-
-httpServer.listen(port, () => {
-  console.log("server HTTP starting on port : " + port)
+httpServer.listen(8080, () => {
+  console.log("server HTTP starting on port : " + 8080)
 });
 
-// httpsServer.listen(8082, () => {
-//   console.log("server HTTPS starting on port : " + 8082)
-// });
+httpsServer.listen(8082, () => {
+  console.log("server HTTPS starting on port : " + 8082)
+});
