@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM debian:stable-slim
 
 WORKDIR /app
 
@@ -6,17 +6,7 @@ COPY . /app
 
 RUN apt update -y
 
-RUN apt install libnss3-dev libgdk-pixbuf2.0-dev libgtk-3-dev libxss-dev libasound2 -y
-
-RUN apt install nodejs -y
-
-RUN apt install npm -y
-
-RUN npm install yarn -g
-
-RUN curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
-
-RUN yarn
+RUN apt install libnss3-dev libgdk-pixbuf2.0-dev libgtk-3-dev libxss-dev libasound2 nodejs npm -y && npm install yarn -g && curl --compressed -o- -L https://yarnpkg.com/install.sh | bash && yarn
 
 EXPOSE 8080
 
