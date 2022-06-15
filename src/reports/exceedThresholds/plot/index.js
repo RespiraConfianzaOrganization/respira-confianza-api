@@ -1,10 +1,9 @@
 const {chartJSNodeCanvas} = require("./canvas");
-const moment = require("moment")
 
-Number.prototype.between = function (min, max) {
-    if (min && max) return this >= min && this <= max
+Number.prototype.betweenWithoutTouch = function (min, max) {
+    if (min && max) return this >= min && this < max
     else if (min && !max) return this >= min
-    else if (!min && max) return this <= max
+    else if (!min && max) return this < max
     else return false
 }
 
