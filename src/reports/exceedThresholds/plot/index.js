@@ -8,8 +8,7 @@ Number.prototype.betweenWithoutTouch = function (min, max) {
 }
 
 const getColorDependingOnThreshold = ({value, thresholds}) => {
-    // https://color-hex.org/color-palettes/187
-    const {good, moderate, unhealthy, very_unhealthy} = thresholds
+    const {good, moderate, unhealthy, very_unhealthy, dangerous} = thresholds
     let color
     if (value.between(0, good)){
         color = '#2cba00'
@@ -19,6 +18,8 @@ const getColorDependingOnThreshold = ({value, thresholds}) => {
         color = '#fff400'
     } else if (value.between(unhealthy, very_unhealthy)){
         color = '#ffa700'
+    } else if (value.between(very_unhealthy, dangerous)){
+        color = '#CD2323FF'
     } else {
         color = '#ff0000'
     }
