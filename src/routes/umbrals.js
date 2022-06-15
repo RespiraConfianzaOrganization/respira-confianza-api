@@ -11,7 +11,6 @@ const addRoutes = (router) => {
   //PRIVATE
   router.get(
     "/pollutant-umbrals",
-    authController.isAuthenticated,
     umbralsController.getAllUmbrals
   );
   router.get(

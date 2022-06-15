@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Emisión de contaminantes</title>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel='stylesheet' type='text/css' href='http://localhost:8080/styles/styles.css' />
+</head>
+<body>
+<div class="report-header">
+    <div class="logo">
+        <img src="https://respiraconfianza.cl/logo.svg" alt="Logo">
+    </div>
+    <div class="report-header-titles">
+        <h1>Reporte de excesos de umbrales en la calidad del aire</h1>
+        <p>Fecha de solicitud: {{dates.requestDate}}</p>
+        <p>Contaminante: {{pollutant.extendedName}} {{pollutant.name}}</p>
+        <p>Estación: {{station.name}}</p>
+        <p>Datos obtenidos entre: {{dates.startDate}} y {{dates.endDate}}</p>
+    </div>
+
+</div>
+<div class="report-body">
+
+    <div class="info">
+        <div class="tables-container">
+            <div>
+            <h3>Rangos en los que se mide el contaminante</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>Tipo</th>
+                    <th>Valor ({{pollutant.unit}})</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Bueno</td>
+                    <td>{{threshold.good}}</td>
+                </tr>
+                <tr>
+                    <td>Moderado</td>
+                    <td>{{threshold.moderate}}</td>
+                </tr>
+                <tr>
+                    <td>Insalubre</td>
+                    <td>{{threshold.unhealthy}}</td>
+                </tr>
+                <tr>
+                    <td>Muy insalubre</td>
+                    <td>{{threshold.very_unhealthy}}</td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+            <div>
+            <h3>Cantidad de veces que contaminante excedió los umbrales permitidos</h3>
+            <table class="exceeds-table">
+                    <tr>
+                        <th>Rangos ({{pollutant.unit}})</th>
+                        <th>Cantidad de excesos</th>
+                    </tr>
+                    {{#each ranges}}
+                    <tr>
+                        <td>{{this.key}}</td>
+                        <td>{{this.count}}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+        </div>
+        <h3>Detalles</h3>
+        <div class="chart-container">
+            <h4>Mediciones obtenidas entre {{dates.startDate}} y {{dates.endDate}}</h4>
+            <img alt="{{chart.alt}}" src="{{chart.src}}">
+        </div>
+    </div>
+</div>
+</body>
+</html>

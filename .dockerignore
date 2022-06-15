@@ -7,7 +7,6 @@
 /coverage
 
 # misc
-.env
 .env.test
 .DS_Store
 .env.local

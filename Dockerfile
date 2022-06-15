@@ -1,11 +1,19 @@
-FROM node:18
+FROM debian:stable-slim
 
 WORKDIR /app
 
 COPY . /app
 
-RUN yarn
+RUN apt update -y && \
+    apt install -y libnss3-dev \
+        libgbm-dev \
+        libasound2 \
+        nodejs \
+        npm && \
+    npm install yarn -g && \
+    curl --compressed -o- -L https://yarnpkg.com/install.sh | bash && \
+    yarn
 
 EXPOSE 8080
 
-CMD ["npm", "run", "dev"]
+CMD ["yarn", "run", "dev"]

@@ -1,0 +1,56 @@
+body {
+    width: 100vw;
+    font-size: 16px;
+    line-height: 24px;
+    font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+}
+
+.report-header {
+    color: rgb(102, 102, 102);
+    padding: 15px 15px 15px 200px;
+    display: flex;
+    align-content: center;
+    text-align: center;
+}
+
+.report-header .logo {
+    position: absolute;
+    top: 40px;
+    left: 15px;
+    width: 150px;
+}
+
+
+.report-body {
+    display: flex;
+    align-content: center;
+    vertical-align: center;
+}
+
+.report-body .info p {
+    border: #ccc solid 1px;
+    padding: 5px;
+    display: block;
+}
+
+.tables-container {
+    display: flex;
+    align-content: center;
+    gap: 10%;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
