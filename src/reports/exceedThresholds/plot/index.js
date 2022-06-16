@@ -10,15 +10,15 @@ Number.prototype.betweenWithoutTouch = function (min, max) {
 const getColorDependingOnThreshold = ({value, thresholds}) => {
     const {good, moderate, unhealthy, very_unhealthy, dangerous} = thresholds
     let color
-    if (value.between(0, good)){
+    if (value.betweenWithoutTouch(0, good)){
         color = '#2cba00'
-    } else if (value.between(good, moderate)){
+    } else if (value.betweenWithoutTouch(good, moderate)){
         color = '#a3ff00'
-    } else if (value.between(moderate, unhealthy)){
+    } else if (value.betweenWithoutTouch(moderate, unhealthy)){
         color = '#fff400'
-    } else if (value.between(unhealthy, very_unhealthy)){
+    } else if (value.betweenWithoutTouch(unhealthy, very_unhealthy)){
         color = '#ffa700'
-    } else if (value.between(very_unhealthy, dangerous)){
+    } else if (value.betweenWithoutTouch(very_unhealthy, dangerous)){
         color = '#CD2323FF'
     } else {
         color = '#ff0000'
