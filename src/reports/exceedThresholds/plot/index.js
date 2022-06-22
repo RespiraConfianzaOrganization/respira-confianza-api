@@ -58,7 +58,13 @@ const getChartBase64 = async (dataset, pollutantUnit, title) => {
     const {data} = currentData
     const labels = data.map(value => value.x).sort()
 
-    const conf =  {
+    const canvasConfig = getCanvasConfig({dataset, pollutantUnit, title, labels})
+
+    return await chartJSNodeCanvas.renderToDataURL(canvasConfig)
+}
+
+const getCanvasConfig = ({dataset, pollutantUnit, labels, title}) => {
+    return {
         type: 'bar',
         data: {
             labels: labels,
@@ -105,8 +111,6 @@ const getChartBase64 = async (dataset, pollutantUnit, title) => {
             }
         }
     };
-
-    return await chartJSNodeCanvas.renderToDataURL(conf)
 }
 
 module.exports = {
