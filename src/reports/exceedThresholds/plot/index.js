@@ -10,21 +10,12 @@ Number.prototype.betweenWithoutTouch = function (min, max) {
 
 const getColorDependingOnThreshold = ({value, thresholds}) => {
     const {good, moderate, unhealthy, very_unhealthy, dangerous} = thresholds
-    let color
-    if (value.betweenWithoutTouch(0, good)){
-        color = colors.LessThanGood
-    } else if (value.betweenWithoutTouch(good, moderate)){
-        color = colors.BetweenGoodAndModerate
-    } else if (value.betweenWithoutTouch(moderate, unhealthy)){
-        color = colors.BetweenModerateAndUnhealthy
-    } else if (value.betweenWithoutTouch(unhealthy, very_unhealthy)){
-        color = colors.BetweenUnhealthyAndVeryUnhealthy
-    } else if (value.betweenWithoutTouch(very_unhealthy, dangerous)){
-        color = colors.BetweenVeryUnhealthyAndDangerous
-    } else {
-        color = colors.MoreThanDangerous
-    }
-    return color
+    if (value.betweenWithoutTouch(0, good)) return colors.LessThanGood
+    else if (value.betweenWithoutTouch(good, moderate)) return colors.BetweenGoodAndModerate
+    else if (value.betweenWithoutTouch(moderate, unhealthy)) return colors.BetweenModerateAndUnhealthy
+    else if (value.betweenWithoutTouch(unhealthy, very_unhealthy)) return colors.BetweenUnhealthyAndVeryUnhealthy
+    else if (value.betweenWithoutTouch(very_unhealthy, dangerous)) return colors.BetweenVeryUnhealthyAndDangerous
+    else return colors.MoreThanDangerous
 }
 
 const makeDataset = ({readings, station, thresholds}) => {
