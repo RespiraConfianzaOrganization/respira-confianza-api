@@ -1,19 +1,24 @@
 const moment = require("moment");
 const {getPollutant, getStation, getThresholdByPollutant} = require("./queries");
 
-const isValidDate = value => {
+const isValidDate = (value, format='YYYY-MM-DD') => {
     try {
-        return moment(value, 'YYYY-MM-DD').isValid()
+        return moment(value, format).isValid()
     } catch(e) {
         return false
     }
 }
 
-const datesAreValid = (startDate, endDate) => {
+const datesAreValid = (startDate,
+                       endDate,
+                       startFormat='YYYY-MM-DD',
+                       endFormat='YYYY-MM-DD',
+                       diffUnit='days'
+) => {
     try {
-        const parsedStartDate = moment(startDate, 'YYYY-MM-DD')
-        const parsedEndDate = moment(endDate, 'YYYY-MM-DD')
-        return parsedEndDate.diff(parsedStartDate, 'days') >= 0
+        const parsedStartDate = moment(startDate, startFormat)
+        const parsedEndDate = moment(endDate, endFormat)
+        return parsedEndDate.diff(parsedStartDate, diffUnit) >= 0
     } catch (e) {
         return false
     }
