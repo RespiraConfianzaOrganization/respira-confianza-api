@@ -11,8 +11,8 @@ const getConsecutivePairs = array => {
 }
 
 const makeThresholdPairsByPollutant = async (thresholds) => {
-    const {good, moderate, unhealthy, very_unhealthy} = thresholds
-    const thresholdsValues = [0, good, moderate, unhealthy, very_unhealthy, Infinity]
+    const {good, moderate, unhealthy, very_unhealthy, dangerous} = thresholds
+    const thresholdsValues = [0, good, moderate, unhealthy, very_unhealthy, dangerous, Infinity]
     return getConsecutivePairs(thresholdsValues)
 }
 
