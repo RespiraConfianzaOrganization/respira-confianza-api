@@ -56,11 +56,11 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
             key: label,
             count: results.length
         })
-        globalResults = globalResults.concat(results)
+        globalResults.push(results)
     }
 
     const dataset = makeDataset({
-        readings: globalResults,
+        readings: globalResults.flat(),
         station: stationData,
         thresholds: thresholdData
     })
