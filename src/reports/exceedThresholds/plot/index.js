@@ -1,4 +1,5 @@
 const {chartJSNodeCanvas} = require("./canvas");
+const {colors} = require("../../../Constants");
 
 Number.prototype.betweenWithoutTouch = function (min, max) {
     if (min && max) return this >= min && this < max
@@ -11,17 +12,17 @@ const getColorDependingOnThreshold = ({value, thresholds}) => {
     const {good, moderate, unhealthy, very_unhealthy, dangerous} = thresholds
     let color
     if (value.betweenWithoutTouch(0, good)){
-        color = '#2cba00'
+        color = colors.LessThanGood
     } else if (value.betweenWithoutTouch(good, moderate)){
-        color = '#a3ff00'
+        color = colors.BetweenGoodAndModerate
     } else if (value.betweenWithoutTouch(moderate, unhealthy)){
-        color = '#fff400'
+        color = colors.BetweenModerateAndUnhealthy
     } else if (value.betweenWithoutTouch(unhealthy, very_unhealthy)){
-        color = '#ffa700'
+        color = colors.BetweenUnhealthyAndVeryUnhealthy
     } else if (value.betweenWithoutTouch(very_unhealthy, dangerous)){
-        color = '#CD2323FF'
+        color = colors.BetweenVeryUnhealthyAndDangerous
     } else {
-        color = '#ff0000'
+        color = colors.MoreThanDangerous
     }
     return color
 }
