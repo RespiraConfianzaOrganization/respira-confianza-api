@@ -1,19 +1,26 @@
-FROM debian:stable-slim
+FROM node:alpine
 
 WORKDIR /app
 
 COPY . /app
 
-RUN apt update -y && \
-    apt install -y libnss3-dev \
-        libgbm-dev \
-        libasound2 \
-        nodejs \
-        npm && \
-    npm install yarn -g && \
-    curl --compressed -o- -L https://yarnpkg.com/install.sh | bash && \
-    yarn
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+RUN apk add --update --no-cache \
+    make \
+    g++ \
+    jpeg-dev \
+    cairo-dev \
+    giflib-dev \
+    pango-dev \
+    libtool \
+    autoconf \
+    automake \
+    chromium
+
+RUN yarn
 
 EXPOSE 8080
 
-CMD ["yarn", "run", "dev"]
+CMD ["yarn", "start"]

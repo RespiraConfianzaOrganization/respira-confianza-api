@@ -1,29 +1,21 @@
 const {chartJSNodeCanvas} = require("./canvas");
-const moment = require("moment")
+const {colors} = require("../../../Constants");
 
-Number.prototype.between = function (min, max) {
-    if (min && max) return this >= min && this <= max
+Number.prototype.betweenWithoutTouch = function (min, max) {
+    if (min && max) return this >= min && this < max
     else if (min && !max) return this >= min
-    else if (!min && max) return this <= max
+    else if (!min && max) return this < max
     else return false
 }
 
 const getColorDependingOnThreshold = ({value, thresholds}) => {
-    // https://color-hex.org/color-palettes/187
-    const {good, moderate, unhealthy, very_unhealthy} = thresholds
-    let color
-    if (value.between(0, good)){
-        color = '#2cba00'
-    } else if (value.between(good, moderate)){
-        color = '#a3ff00'
-    } else if (value.between(moderate, unhealthy)){
-        color = '#fff400'
-    } else if (value.between(unhealthy, very_unhealthy)){
-        color = '#ffa700'
-    } else {
-        color = '#ff0000'
-    }
-    return color
+    const {good, moderate, unhealthy, very_unhealthy, dangerous} = thresholds
+    if (value.betweenWithoutTouch(0, good)) return colors.LessThanGood
+    else if (value.betweenWithoutTouch(good, moderate)) return colors.BetweenGoodAndModerate
+    else if (value.betweenWithoutTouch(moderate, unhealthy)) return colors.BetweenModerateAndUnhealthy
+    else if (value.betweenWithoutTouch(unhealthy, very_unhealthy)) return colors.BetweenUnhealthyAndVeryUnhealthy
+    else if (value.betweenWithoutTouch(very_unhealthy, dangerous)) return colors.BetweenVeryUnhealthyAndDangerous
+    else return colors.MoreThanDangerous
 }
 
 const makeDataset = ({readings, station, thresholds}) => {
@@ -57,7 +49,13 @@ const getChartBase64 = async (dataset, pollutantUnit, title) => {
     const {data} = currentData
     const labels = data.map(value => value.x).sort()
 
-    const conf =  {
+    const canvasConfig = getCanvasConfig({dataset, pollutantUnit, title, labels})
+
+    return await chartJSNodeCanvas.renderToDataURL(canvasConfig)
+}
+
+const getCanvasConfig = ({dataset, pollutantUnit, labels, title}) => {
+    return {
         type: 'bar',
         data: {
             labels: labels,
@@ -104,8 +102,6 @@ const getChartBase64 = async (dataset, pollutantUnit, title) => {
             }
         }
     };
-
-    return await chartJSNodeCanvas.renderToDataURL(conf)
 }
 
 module.exports = {

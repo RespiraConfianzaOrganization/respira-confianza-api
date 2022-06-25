@@ -11,8 +11,8 @@ const getConsecutivePairs = array => {
 }
 
 const makeThresholdPairsByPollutant = async (thresholds) => {
-    const {good, moderate, unhealthy, very_unhealthy} = thresholds
-    const thresholdsValues = [0, good, moderate, unhealthy, very_unhealthy, Infinity]
+    const {good, moderate, unhealthy, very_unhealthy, dangerous} = thresholds
+    const thresholdsValues = [0, good, moderate, unhealthy, very_unhealthy, dangerous, Infinity]
     return getConsecutivePairs(thresholdsValues)
 }
 
@@ -56,11 +56,11 @@ const getReportDataPerPollutantAndStation = async ({pollutant, station, startDat
             key: label,
             count: results.length
         })
-        globalResults = globalResults.concat(results)
+        globalResults.push(results)
     }
 
     const dataset = makeDataset({
-        readings: globalResults,
+        readings: globalResults.flat(),
         station: stationData,
         thresholds: thresholdData
     })

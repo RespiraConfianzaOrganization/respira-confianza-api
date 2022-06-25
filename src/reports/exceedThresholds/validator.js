@@ -1,6 +1,4 @@
 const validators = require("../validators");
-const {getThresholdByPollutant, getPollutant, getStation, getTimesExceedThreshold} = require("../queries")
-
 const {isValidDate, datesAreValid, pollutantIsValid, stationIsValid, thresholdIsValid} = validators;
 
 const getErrors = async ({startDate, endDate, pollutant, station, requestDate}) => {
