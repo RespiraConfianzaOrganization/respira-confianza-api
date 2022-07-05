@@ -95,9 +95,13 @@ const newStation = async (req, res) => {
         .json({ message: "Ya existe una estación en las mismas coordenadas" });
     }
   }
-  let privateKey;
-  await bcrypt.genSalt(saltRounds);
-  await bcrypt.hash(name, saltRounds).then((hash) => (privateKey = hash));
+
+  let { privateKey } = req.body;
+  if (!privateKey || privateKey.length === 0) {
+    await bcrypt.genSalt(saltRounds);
+    await bcrypt.hash(name, saltRounds).then((hash) => (privateKey = hash));
+  }
+
 
   station = await models.Station.create({
     private_key: privateKey,
