@@ -2,15 +2,14 @@ const models = require('../../models');
 const logger = require("../../../logger")
 
 const receiveReading = async (req, res) => {
-  const private_key = req.body.privateKey
-  const body = req.body
-  if (!private_key) {
+  const {privateKey, ...body} = req.body
+  if (!privateKey) {
     logger.info('receiveReading ' + 400);
     return res.status(400).json({ message: "Debe ingresar la clave secreta de la estación" });
   }
   //Validate private Key
   const station = await models.Station.findOne({
-    where: { private_key },
+    where: { private_key: privateKey },
     include: [
       {
         model: models.Pollutant_Station,
@@ -24,9 +23,7 @@ const receiveReading = async (req, res) => {
   try {
     let data = {
       station_id: station.id,
-      TEMP: body.TEMP,
-      PRESS: body.PRESS,
-      HR: body.HR,
+      ...body
     }
     // Search actual pollutants of the station
     const pollutantStations = station.Pollutant_Stations
@@ -45,9 +42,7 @@ const receiveReading = async (req, res) => {
       }
     }
 
-    await models.Station_Readings.create(
-      data
-    )
+    await models.Station_Readings.create(data)
     logger.info('receiveReading ' + 201 + " " + station.name);
     return res.status(201).json({ message: "Datos ingresados correctamente" });
   } catch (e) {
