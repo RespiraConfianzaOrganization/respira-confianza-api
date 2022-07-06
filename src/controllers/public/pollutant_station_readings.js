@@ -19,6 +19,7 @@ const getObjectsGroupedByTime = async (startDate, endDate, stations, fields) => 
     const joinedFields = stringFields.join(',')
     const tupleStations = `(${stations.map(s => `'${s}'`).toString()})`
     const rawQuery =  `
+    SET time zone '${process.env.TZ}';
     SELECT station_id,
            make_timestamp(CAST(DATE_PART('year', recorded_at) as integer),
                           CAST(DATE_PART('month', recorded_at) as integer),
