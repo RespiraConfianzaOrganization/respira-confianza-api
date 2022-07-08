@@ -14,13 +14,14 @@ const xmlparser = require('express-xml-bodyparser');
 const cors = require('cors')
 const path = require("path");
 const morgan = require('morgan');
+const compression = require('compression');
 
 app.use(express.static(path.join(__dirname, "build")));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(xmlparser());
-
+app.use(compression());
 
 app.use(morgan('[:date[iso]] :method :url :status :res[content-length] - :response-time ms'));
 
