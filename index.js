@@ -1,11 +1,4 @@
-const fs = require('fs');
 const http = require('http');
-const https = require('https');
-const certificate = fs.readFileSync('config/certs/selfsigned.crt', 'utf8');
-const privateKey = fs.readFileSync('config/certs/selfsigned.key', 'utf8');
-const ca = fs.readFileSync('config/certs/selfsigned.ca-bundle', 'utf8');
-
-const credentials = { key: privateKey, cert: certificate, ca: ca, };
 const express = require('express');
 const app = express();
 
@@ -16,12 +9,12 @@ const path = require("path");
 const morgan = require('morgan');
 const compression = require('compression');
 
+app.use(compression());
 app.use(express.static(path.join(__dirname, "build")));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(xmlparser());
-app.use(compression());
 
 app.use(morgan('[:date[iso]] :method :url :status :res[content-length] - :response-time ms'));
 
@@ -39,12 +32,7 @@ const routes = require("./src/routes");
 app.use("/api", routes);
 
 const httpServer = http.createServer(app);
-const httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(8080, () => {
   console.log("server HTTP starting on port : " + 8080)
-});
-
-httpsServer.listen(8082, () => {
-  console.log("server HTTPS starting on port : " + 8082)
 });
